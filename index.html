@@ -3,731 +3,738 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Manajemen OSIS PRO - Final</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <title>Sistem Manajemen OSIS PRO</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         :root {
-            --primary: #1e40af;
-            --secondary: #3b82f6;
-            --accent: #60a5fa;
-            --bg-gradient: linear-gradient(135deg, #0f172a, #1e3a8a);
-            --glass: rgba(255, 255, 255, 0.1);
-            --glass-border: rgba(255, 255, 255, 0.2);
-            --text-color: #ffffff;
+            --bg-color: #0f172a;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --primary: #3b82f6;
+            --accent: #8b5cf6;
+            --text: #e2e8f0;
+            --success: #10b981;
+            --danger: #ef4444;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
 
         body {
-            background: var(--bg-gradient);
-            color: var(--text-color);
+            background-color: var(--bg-color);
+            color: var(--text);
             min-height: 100vh;
+            background-image: radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.2) 0%, transparent 20%),
+                              radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.2) 0%, transparent 20%);
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
-            overflow-x: hidden;
-            padding-bottom: 50px;
+            transition: background 0.5s ease;
         }
 
-        /* Container */
-        .container {
-            max-width: 480px;
-            margin: 0 auto;
-            padding: 20px;
+        /* Utility: Glassmorphism */
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        /* --- LOGIN PAGE --- */
+        #login-page {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            z-index: 100;
             position: relative;
         }
 
-        /* Card Glassmorphism */
-        .card {
-            background: rgba(30, 58, 138, 0.85);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            padding: 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            margin-bottom: 20px;
-            animation: slideUp 0.5s ease-out;
+        .login-card {
+            width: 100%;
+            max-width: 400px;
+            padding: 2rem;
+            text-align: center;
         }
 
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
+        .input-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
         }
 
-        /* Elements */
-        h1, h2, h3 { text-align: center; margin-bottom: 20px; text-transform: capitalize; }
-        
-        label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 0.9rem; margin-top: 10px;}
-        
         input, select, textarea {
             width: 100%;
             padding: 12px;
-            margin-bottom: 10px;
-            border-radius: 12px;
+            margin-top: 5px;
+            background: rgba(0, 0, 0, 0.3);
             border: 1px solid var(--glass-border);
-            background: rgba(255, 255, 255, 0.1);
             color: white;
+            border-radius: 8px;
             outline: none;
             transition: 0.3s;
         }
 
-        input:focus, textarea:focus {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: var(--secondary);
-        }
+        input:focus { border-color: var(--primary); }
 
-        /* Buttons */
-        .btn {
+        button {
             width: 100%;
             padding: 12px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
             border: none;
-            border-radius: 12px;
-            background: var(--secondary);
             color: white;
+            border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
-            transition: 0.3s;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-            margin-top: 10px;
+            transition: transform 0.2s, box-shadow 0.2s;
         }
 
-        .btn:hover { background: var(--accent); transform: translateY(-2px); }
-        .btn:active { transform: scale(0.98); }
-        
-        .btn-danger { background: #ef4444; }
-        .btn-success { background: #22c55e; }
-        .btn-warning { background: #f59e0b; color: black; }
-        .btn-back { background: transparent; border: 1px solid white; margin-bottom: 15px; width: auto; padding: 8px 15px;}
-        .btn-small { width: auto; padding: 5px 10px; font-size: 0.8rem; margin-top: 0;}
-
-        /* Grid Dashboard */
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
         }
 
-        .menu-item {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: 0.3s;
-            border: 1px solid transparent;
+        button.secondary { background: #475569; }
+        button.danger { background: var(--danger); }
+
+        /* --- DASHBOARD --- */
+        #dashboard { display: none; height: 100vh; overflow: hidden; }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            height: 100%;
+            padding: 1.5rem;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 120px;
+            border-right: 1px solid var(--glass-border);
         }
 
-        .menu-item:hover {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: var(--secondary);
-            transform: translateY(-5px);
-        }
-
-        .menu-item i { font-size: 2rem; margin-bottom: 10px; color: var(--accent); }
-        .menu-item span { font-size: 0.85rem; font-weight: 600; line-height: 1.2;}
-
-        /* Helpers & List Styles */
-        .hidden { display: none; }
-        .list-item { 
-            background: rgba(0,0,0,0.25); 
-            padding: 15px; 
-            border-radius: 12px; 
-            margin-bottom: 10px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center;
-            border-left: 4px solid var(--secondary);
-        }
-        
-        /* History Item Style */
-        .history-item {
-            background: rgba(255,255,255,0.05);
+        .nav-item {
             padding: 12px;
-            border-radius: 10px;
-            margin-bottom: 10px;
-            border-left: 3px solid #f59e0b;
-        }
-        .history-item small { color: #aaa; display: block; margin-bottom: 5px;}
-        .history-item p { margin: 5px 0; font-size: 0.9rem; color: #ddd; font-style: italic;}
-        
-        .deadline-card { padding: 15px; margin-bottom: 10px; border-radius: 12px; border-left: 6px solid white; background: rgba(0,0,0,0.2); }
-        .deadline-done { opacity: 0.6; text-decoration: line-through; border-left-color: #22c55e !important; }
-
-        .doc-card {
-            background: linear-gradient(45deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
-            border: 1px solid var(--glass-border);
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 15px;
+            margin-bottom: 8px;
+            border-radius: 8px;
             cursor: pointer;
             transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #94a3b8;
         }
-        .doc-card:hover { transform: scale(1.02); background: rgba(255,255,255,0.15); }
-        .doc-icon { font-size: 2rem; float: left; margin-right: 15px; color: #f59e0b; }
 
+        .nav-item:hover, .nav-item.active {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .grid-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .card { padding: 1.5rem; }
+        
+        /* Specific Modules */
+        .task-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid var(--glass-border);
+            animation: fadeIn 0.5s;
+        }
+
+        .task-done { text-decoration: line-through; color: var(--success); opacity: 0.7; }
+        
+        .badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            #dashboard { flex-direction: column; }
+            .sidebar { 
+                width: 100%; 
+                height: auto; 
+                flex-direction: row; 
+                overflow-x: auto; 
+                padding: 1rem;
+                border-right: none;
+                border-bottom: 1px solid var(--glass-border);
+            }
+            .nav-item { font-size: 0.8rem; white-space: nowrap; }
+            .main-content { padding: 1rem; }
+        }
+
+        .hidden { display: none !important; }
+        .text-sm { font-size: 0.85rem; color: #cbd5e1; }
+        .mt-2 { margin-top: 1rem; }
     </style>
 </head>
 <body>
 
-<div class="container">
-
-    <div id="page-login" class="card">
-        <h2>Sistem OSIS PRO</h2>
-        <p style="text-align: center; margin-bottom: 20px; opacity: 0.8;">Portal Manajemen Terpadu</p>
-        
-        <label>Nama Pengguna</label>
-        <input type="text" id="login-name" placeholder="Siapa nama Anda?">
-
-        <label>Jabatan</label>
-        <select id="login-role" onchange="checkRoleInputs()">
-            <option value="Anggota">Anggota</option>
-            <option value="Bendahara">Bendahara</option>
-            <option value="Ketua">Ketua</option>
-        </select>
-
-        <div id="password-container" class="hidden">
-            <label>Password</label>
-            <div style="position: relative;">
-                <input type="password" id="login-pass" placeholder="Password khusus">
-                <i class="fas fa-eye" onclick="togglePass()" style="position: absolute; right: 15px; top: 15px; cursor: pointer;"></i>
+    <div id="login-page">
+        <div class="glass login-card">
+            <h2 style="margin-bottom: 20px;"><i class="fas fa-layer-group"></i> OSIS PRO</h2>
+            <div class="input-group">
+                <label>Nama Anda</label>
+                <input type="text" id="loginName" placeholder="Masukkan nama panggilan...">
             </div>
-        </div>
-
-        <button class="btn" onclick="handleLogin()">Masuk Portal <i class="fas fa-arrow-right"></i></button>
-    </div>
-
-    <div id="page-dashboard" class="hidden">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <div>
-                <h3 style="text-align: left; margin:0; font-size:1.5rem;">Halo, <span id="display-name">User</span></h3>
-                <small id="display-role" style="color: var(--accent); font-weight:bold;">Anggota</small>
+            <div class="input-group">
+                <label>Pilih Role</label>
+                <select id="loginRole" onchange="togglePasswordInput()">
+                    <option value="Anggota">Anggota</option>
+                    <option value="Bendahara">Bendahara</option>
+                    <option value="Ketua">Ketua</option>
+                </select>
             </div>
-            <button onclick="logout()" style="background:none; border:none; color:white; cursor:pointer;"><i class="fas fa-sign-out-alt fa-lg"></i></button>
-        </div>
-
-        <div class="dashboard-grid">
-            <div class="menu-item" onclick="nav('page-laporan-tugas')">
-                <i class="fas fa-clipboard-check"></i>
-                <span>Laporan Tugas</span>
+            <div class="input-group hidden" id="passwordGroup">
+                <label>Password Khusus</label>
+                <input type="password" id="loginPass" placeholder="Masukkan password...">
             </div>
-            <div class="menu-item" onclick="nav('page-poin')">
-                <i class="fas fa-star"></i>
-                <span>Lihat Poin</span>
-            </div>
-            <div class="menu-item" onclick="nav('page-keuangan')">
-                <i class="fas fa-wallet"></i>
-                <span>Keuangan</span>
-            </div>
-            <div class="menu-item" onclick="nav('page-deadline')">
-                <i class="fas fa-hourglass-half"></i>
-                <span>Deadline Tugas</span>
-            </div>
-            <div class="menu-item" onclick="nav('page-divisi')">
-                <i class="fas fa-users-cog"></i>
-                <span>Tugas Anggota</span>
-            </div>
-            <div class="menu-item" onclick="nav('page-dokumentasi')">
-                <i class="fas fa-camera-retro"></i>
-                <span>Hasil Dokumentasi</span>
-            </div>
-            <div class="menu-item" onclick="nav('page-acara-selesai')">
-                <i class="fas fa-flag-checkered"></i>
-                <span>Acara Selesai</span>
-            </div>
-            <div class="menu-item" onclick="nav('page-notulensi')">
-                <i class="fas fa-book"></i>
-                <span>Notulensi</span>
-            </div>
-            <div class="menu-item" onclick="nav('page-report')">
-                <i class="fas fa-exclamation-triangle"></i>
-                <span>Report/Aduan</span>
-            </div>
-            <div class="menu-item" id="btn-background" onclick="nav('page-background')">
-                <i class="fas fa-image"></i>
-                <span>Background</span>
-            </div>
-            <div class="menu-item" onclick="nav('page-juknis')">
-                <i class="fas fa-info-circle"></i>
-                <span>Juknis</span>
-            </div>
+            <button onclick="handleLogin()">MASUK <i class="fas fa-arrow-right"></i></button>
         </div>
     </div>
 
-    <div id="page-laporan-tugas" class="card hidden">
-        <button class="btn btn-back" onclick="nav('page-dashboard')">Kembali</button>
-        <h3>Laporan Tugas</h3>
-        <label>Nama Osis</label>
-        <input type="text" id="tugas-nama" readonly style="opacity: 0.7;">
-        <label>Tugas yang diselesaikan (Penyebab Poin Bertambah)</label>
-        <textarea id="tugas-desc" rows="3" placeholder="Contoh: Menyelesaikan dekorasi panggung..."></textarea>
-        <button class="btn" onclick="submitTugas()">Kirim & Dapat Poin</button>
-    </div>
-
-    <div id="page-poin" class="card hidden">
-        <button class="btn btn-back" onclick="nav('page-dashboard')">Kembali</button>
-        <h3>Klasemen Poin</h3>
-        <div id="poin-list" style="margin-top:20px; max-height: 200px; overflow-y:auto;"></div>
-        
-        <hr style="border-color: rgba(255,255,255,0.2); margin: 20px 0;">
-        
-        <h3>Riwayat Aktivitas</h3>
-        <p style="text-align:center; font-size:0.8rem; opacity:0.7; margin-bottom:10px;">(Log penambahan poin)</p>
-        <div id="poin-history" style="max-height: 300px; overflow-y:auto;">
-            </div>
-    </div>
-
-    <div id="page-keuangan" class="card hidden">
-        <button class="btn btn-back" onclick="nav('page-dashboard')">Kembali</button>
-        <h3>Laporan Keuangan</h3>
-        
-        <div style="text-align: center; margin-bottom: 20px; background: rgba(0,0,0,0.3); padding: 20px; border-radius: 15px;">
-            <small>Total Kas Saat Ini</small>
-            <h2 id="saldo-total" style="font-size: 2rem; color: #4ade80;">Rp 0</h2>
+    <div id="dashboard" style="display: flex;">
+        <div class="glass sidebar">
+            <h3 style="margin-bottom: 20px; text-align: center;"><i class="fas fa-bolt"></i> OSIS HUB</h3>
+            <div class="nav-item active" onclick="switchTab('home')"><i class="fas fa-home"></i> Dashboard</div>
+            <div class="nav-item" onclick="switchTab('tasks')"><i class="fas fa-tasks"></i> Tugas & Poin</div>
+            <div class="nav-item" onclick="switchTab('finance')"><i class="fas fa-wallet"></i> Keuangan</div>
+            <div class="nav-item" onclick="switchTab('deadlines')"><i class="fas fa-clock"></i> Deadline</div>
+            <div class="nav-item" onclick="switchTab('docs')"><i class="fas fa-folder-open"></i> Dokumentasi</div>
+            <div class="nav-item" onclick="switchTab('divisi')"><i class="fas fa-users"></i> Divisi</div>
+            <div class="nav-item" onclick="switchTab('settings')"><i class="fas fa-cog"></i> Pengaturan</div>
+            <div style="flex-grow: 1;"></div>
+            <div class="nav-item" style="color: var(--danger);" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</div>
         </div>
 
-        <div id="keuangan-form" class="hidden">
-            <label>Keterangan</label>
-            <input type="text" id="keuangan-ket">
-            <label>Jumlah Uang (Rp)</label>
-            <input type="number" id="keuangan-jml">
-            <label>Jenis Transaksi</label>
-            <select id="keuangan-tipe">
-                <option value="masuk">Pemasukan (+)</option>
-                <option value="keluar">Pengeluaran (-)</option>
-            </select>
-            <button class="btn" onclick="submitKeuangan()">Kirim Laporan</button>
-        </div>
-        <div style="margin-top: 20px;" id="keuangan-list"></div>
-    </div>
-
-    <div id="page-deadline" class="card hidden">
-        <button class="btn btn-back" onclick="nav('page-dashboard')">Kembali</button>
-        <h3>Deadline Tugas</h3>
-        
-        <div id="deadline-form" class="hidden">
-            <label>Keterangan Tugas</label>
-            <input type="text" id="dl-ket">
-            <label>Tanggal Deadline</label>
-            <input type="date" id="dl-tgl">
-            <label>Warna Penanda</label>
-            <input type="color" id="dl-color" value="#ef4444" style="height: 50px; cursor: pointer;">
-            <button class="btn" onclick="submitDeadline()">Publikasi Deadline</button>
-        </div>
-        
-        <div id="deadline-list" style="margin-top: 20px;"></div>
-    </div>
-
-    <div id="page-dokumentasi" class="card hidden">
-        <button class="btn btn-back" onclick="nav('page-dashboard')">Kembali</button>
-        <h3>Hasil Dokumentasi</h3>
-
-        <div id="doc-form" class="hidden" style="margin-bottom: 20px; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 10px;">
-            <h4 style="margin-bottom:10px; color:var(--accent)">Tambah Dokumentasi (Ketua)</h4>
-            <label>Nama Acara</label>
-            <input type="text" id="doc-nama">
-            <label>Tanggal Pelaksanaan</label>
-            <input type="date" id="doc-tgl">
-            <label>Link (Gdrive/Youtube)</label>
-            <input type="text" id="doc-link" placeholder="https://...">
-            <button class="btn" onclick="submitDokumentasi()">Simpan Dokumentasi</button>
-        </div>
-
-        <div id="doc-list"></div>
-    </div>
-
-    <div id="page-acara-selesai" class="card hidden">
-        <button class="btn btn-back" onclick="nav('page-dashboard')">Kembali</button>
-        <h3>Arsip Acara Selesai</h3>
-
-        <div id="finished-form" class="hidden" style="margin-bottom: 20px;">
-            <label>Deskripsi Acara Selesai</label>
-            <textarea id="finished-desc" rows="5" placeholder="Tulis cerita sukses acara ini..."></textarea>
-            <button class="btn" onclick="submitAcaraSelesai()">Arsip Acara</button>
-        </div>
-
-        <div id="finished-list"></div>
-    </div>
-
-    <div id="page-divisi" class="card hidden">
-        <button class="btn btn-back" onclick="nav('page-dashboard')">Kembali</button>
-        <h3>Pilih Divisi</h3>
-        <div class="dashboard-grid">
-            <button class="btn" onclick="openDivisi('Ketua Osis')">Ketua OSIS</button>
-            <button class="btn" onclick="openDivisi('Wakil Ketua')">Wakil Ketua</button>
-            <button class="btn" onclick="openDivisi('Bendahara')">Bendahara</button>
-            <button class="btn" onclick="openDivisi('Sekertaris')">Sekertaris</button>
-            <button class="btn" onclick="openDivisi('Logistik')">Logistik</button>
-            <button class="btn" onclick="openDivisi('Humas')">Humas</button>
-            <button class="btn" onclick="openDivisi('Acara')">Acara</button>
-            <button class="btn" onclick="openDivisi('PDD')">PDD</button>
-            <button class="btn" onclick="openDivisi('Keamanan')">Keamanan</button>
-        </div>
-    </div>
-
-    <div id="page-detail-divisi" class="card hidden">
-        <button class="btn btn-back" onclick="nav('page-divisi')">Kembali</button>
-        <h3 id="divisi-title">Tugas Divisi</h3>
-        <div id="divisi-editor" class="hidden">
-            <textarea id="divisi-input" rows="5"></textarea>
-            <button class="btn" onclick="saveDivisi()">Simpan Jobdesk</button>
-        </div>
-        <div id="divisi-view" style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px; min-height: 100px; white-space: pre-wrap;"></div>
-    </div>
-
-    <div id="page-notulensi" class="card hidden">
-        <button class="btn btn-back" onclick="nav('page-dashboard')">Kembali</button>
-        <h3>Notulensi Rapat</h3>
-        <div id="notulensi-form">
-            <label>Judul</label>
-            <input type="text" id="notulensi-judul">
-            <label>Tanggal</label>
-            <input type="date" id="notulensi-tgl">
-            <label>Isi Notulensi</label>
-            <textarea id="notulensi-isi" rows="4"></textarea>
-            <button class="btn" onclick="submitNotulensi()">Kirim Notulensi</button>
-        </div>
-        <div id="notulensi-list" style="margin-top: 20px;"></div>
-    </div>
-
-    <div id="page-juknis" class="card hidden">
-        <button class="btn btn-back" onclick="nav('page-dashboard')">Kembali</button>
-        <h3>Juknis Anggota</h3>
-        <div id="juknis-content" style="margin-bottom: 20px;"></div>
-        <button id="btn-edit-juknis" class="btn hidden" onclick="editJuknis()">Edit Juknis</button>
-    </div>
-
-    <div id="page-report" class="card hidden">
-        <button class="btn btn-back" onclick="nav('page-dashboard')">Kembali</button>
-        <h3>Report & Aduan</h3>
-        <label>Isi Aduan (Rahasia)</label>
-        <textarea id="report-isi" rows="4"></textarea>
-        <button class="btn" onclick="sendReport()">Kirim ke Ketua</button>
-        <div id="report-list-container" class="hidden" style="margin-top: 20px;">
-            <h4>Laporan Masuk</h4>
-            <div id="report-list"></div>
-        </div>
-    </div>
-
-    <div id="page-background" class="card hidden">
-        <button class="btn btn-back" onclick="nav('page-dashboard')">Kembali</button>
-        <h3>Ganti Background</h3>
-        <input type="file" id="bg-file" accept="image/*">
-        <button class="btn" onclick="changeBackground()">Ganti Background</button>
-        <button class="btn btn-warning" onclick="resetBackground()">Reset Default</button>
-    </div>
-
-</div>
-
-<script>
-    // --- DATABASE & STATE ---
-    const DB_KEY = 'osis_pro_final_v3'; // Versi Database Terbaru
-    
-    let db = JSON.parse(localStorage.getItem(DB_KEY)) || {
-        users: [], 
-        tasks: [], // {id, name, desc, date}
-        finance: [], 
-        minutes: [], 
-        deadlines: [], 
-        divisi: {}, 
-        juknis: ["Datang kumpulan tepat waktu", "Selalu mengerjakan tugas", "Menjaga etika", "Lapor jika absen"],
-        reports: [], 
-        docs: [],
-        finishedEvents: [],
-        customBg: null
-    };
-
-    let currentUser = null;
-    let currentRole = null;
-    let currentDivisiEditing = null;
-
-    function saveDB() {
-        localStorage.setItem(DB_KEY, JSON.stringify(db));
-    }
-
-    // --- INIT ---
-    window.onload = function() {
-        if(db.customBg) document.body.style.backgroundImage = `url(${db.customBg})`;
-    };
-
-    // --- NAVIGATION ---
-    function nav(pageId) {
-        document.querySelectorAll('.container > div').forEach(div => div.classList.add('hidden'));
-        document.getElementById(pageId).classList.remove('hidden');
-        
-        if(pageId === 'page-poin') renderPoin();
-        if(pageId === 'page-keuangan') renderKeuangan();
-        if(pageId === 'page-notulensi') renderNotulensi();
-        if(pageId === 'page-deadline') renderDeadline();
-        if(pageId === 'page-juknis') renderJuknis();
-        if(pageId === 'page-report') renderReport();
-        if(pageId === 'page-dokumentasi') renderDokumentasi();
-        if(pageId === 'page-acara-selesai') renderAcaraSelesai();
-        if(pageId === 'page-laporan-tugas') {
-            document.getElementById('tugas-nama').value = currentUser;
-        }
-    }
-
-    // --- LOGIN ---
-    function checkRoleInputs() {
-        const role = document.getElementById('login-role').value;
-        const passContainer = document.getElementById('password-container');
-        passContainer.classList.toggle('hidden', role === 'Anggota');
-    }
-
-    function togglePass() {
-        const input = document.getElementById('login-pass');
-        input.type = input.type === 'password' ? 'text' : 'password';
-    }
-
-    function handleLogin() {
-        const name = document.getElementById('login-name').value;
-        const role = document.getElementById('login-role').value;
-        const pass = document.getElementById('login-pass').value;
-
-        if (!name) return alert("Nama wajib diisi!");
-        if (role === 'Bendahara' && pass !== 'bendahara321') return alert("Password Salah!");
-        if (role === 'Ketua' && pass !== 'Ketua 315') return alert("Password Salah!");
-
-        currentUser = name;
-        currentRole = role;
-
-        let userExists = db.users.find(u => u.name === name);
-        if(!userExists) {
-            db.users.push({name: name, points: 0});
-            saveDB();
-        }
-
-        document.getElementById('display-name').innerText = name;
-        document.getElementById('display-role').innerText = role;
-        document.getElementById('btn-background').style.display = (role === 'Ketua') ? 'flex' : 'none';
-
-        nav('page-dashboard');
-    }
-
-    function logout() { location.reload(); }
-
-    // --- 1. POIN & TUGAS (UPDATED HISTORY) ---
-    function submitTugas() {
-        const desc = document.getElementById('tugas-desc').value;
-        if(!desc) return alert("Isi deskripsi tugas!");
-
-        // 1. Tambah Poin
-        let userIndex = db.users.findIndex(u => u.name === currentUser);
-        if (userIndex === -1) {
-            db.users.push({name: currentUser, points: 0});
-            userIndex = db.users.length - 1;
-        }
-        db.users[userIndex].points += 1;
-        
-        // 2. Simpan Log (Riwayat)
-        db.tasks.push({
-            id: Date.now(),
-            name: currentUser,
-            desc: desc,
-            date: new Date().toLocaleString()
-        });
-
-        saveDB();
-        
-        document.getElementById('tugas-desc').value = '';
-        alert(`Laporan Diterima! Poin +1`);
-        nav('page-dashboard');
-    }
-
-    function renderPoin() {
-        // A. Render Klasemen
-        const list = document.getElementById('poin-list');
-        list.innerHTML = '';
-        const sortedUsers = [...db.users].sort((a,b) => b.points - a.points);
-        sortedUsers.forEach((u, index) => {
-            if(u.points >= 0) {
-                list.innerHTML += `
-                <div class="list-item">
-                    <span><b>#${index+1}</b> ${u.name}</span>
-                    <span style="font-weight:bold; color:#fbbf24; font-size:1.2rem;">${u.points} <i class="fas fa-star"></i></span>
+        <div class="main-content">
+            <div class="header glass" style="padding: 15px; border-radius: 12px;">
+                <div>
+                    <h2 id="pageTitle">Dashboard</h2>
+                    <p class="text-sm">Selamat datang, <span id="userNameDisplay" style="color: var(--primary); font-weight: bold;">User</span> (<span id="userRoleDisplay">Role</span>)</p>
                 </div>
-                ${currentRole === 'Ketua' ? `<button onclick="kurangiPoin('${u.name}')" class="btn btn-danger btn-small" style="margin-bottom:10px;">Hapus Curang</button>` : ''}
-                `;
-            }
-        });
+                <div id="dateDisplay" class="text-sm"></div>
+            </div>
 
-        // B. Render Riwayat (History)
-        const historyList = document.getElementById('poin-history');
-        historyList.innerHTML = '';
-        
-        // Urutkan tugas dari yang paling baru (Descending ID)
-        const logs = [...db.tasks].sort((a,b) => b.id - a.id);
-        
-        if(logs.length === 0) {
-            historyList.innerHTML = '<p style="text-align:center; opacity:0.5;">Belum ada aktivitas.</p>';
-        } else {
-            logs.forEach(log => {
-                historyList.innerHTML += `
-                <div class="history-item">
-                    <div style="display:flex; justify-content:space-between;">
-                        <span style="font-weight:bold; color:var(--accent);">${log.name}</span>
-                        <span style="color:#22c55e; font-size:0.8rem; font-weight:bold;">+1 Poin</span>
+            <div id="tab-home" class="tab-content">
+                <div class="grid-cards">
+                    <div class="glass card">
+                        <h3><i class="fas fa-star" style="color: gold;"></i> Klasemen Poin</h3>
+                        <div id="leaderboardList" class="mt-2"></div>
                     </div>
-                    <p>"${log.desc}"</p>
-                    <small>${log.date}</small>
+                    <div class="glass card">
+                        <h3><i class="fas fa-bullhorn"></i> Info Terbaru</h3>
+                        <div id="latestInfo" class="mt-2 text-sm">Belum ada arsip acara.</div>
+                    </div>
                 </div>
-                `;
+                <div class="glass card">
+                    <h3>Riwayat Log Aktivitas</h3>
+                    <ul id="activityLog" class="mt-2" style="list-style: none; max-height: 200px; overflow-y: auto;"></ul>
+                </div>
+            </div>
+
+            <div id="tab-tasks" class="tab-content hidden">
+                <div class="glass card" style="margin-bottom: 20px;">
+                    <h3>Lapor Tugas (Dapat +1 Poin)</h3>
+                    <input type="text" id="taskDesc" placeholder="Apa yang baru saja kamu kerjakan? (Misal: Membuat poster acara)">
+                    <button class="mt-2" onclick="submitTask()"><i class="fas fa-paper-plane"></i> Kirim Laporan</button>
+                </div>
+            </div>
+
+            <div id="tab-finance" class="tab-content hidden">
+                <div class="grid-cards">
+                    <div class="glass card" style="text-align: center;">
+                        <p>Saldo Saat Ini</p>
+                        <h1 id="totalSaldo" style="color: var(--success);">Rp 0</h1>
+                    </div>
+                </div>
+                <div id="financeControls" class="glass card hidden" style="margin-bottom: 20px;">
+                    <h3>Input Transaksi</h3>
+                    <select id="finType">
+                        <option value="in">Pemasukan (+)</option>
+                        <option value="out">Pengeluaran (-)</option>
+                    </select>
+                    <input type="number" id="finAmount" placeholder="Nominal (Rp)">
+                    <input type="text" id="finDesc" placeholder="Keterangan">
+                    <button class="mt-2" onclick="addTransaction()">Simpan Transaksi</button>
+                </div>
+                <div class="glass card">
+                    <h3>Riwayat Keuangan</h3>
+                    <table style="width: 100%; text-align: left; margin-top: 10px;">
+                        <thead><tr><th>Tgl</th><th>Ket</th><th>Jml</th><th>Aksi</th></tr></thead>
+                        <tbody id="financeTable"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="tab-deadlines" class="tab-content hidden">
+                <div id="deadlineControls" class="glass card hidden" style="margin-bottom: 20px;">
+                    <h3>Tambah Deadline</h3>
+                    <input type="text" id="dlTitle" placeholder="Nama Tugas">
+                    <input type="color" id="dlColor" value="#ef4444" style="height: 40px; cursor: pointer;">
+                    <button class="mt-2" onclick="addDeadline()">Tambah Deadline</button>
+                </div>
+                <div class="glass card">
+                    <h3>Daftar Deadline</h3>
+                    <div id="deadlineList" class="mt-2"></div>
+                </div>
+            </div>
+
+            <div id="tab-docs" class="tab-content hidden">
+                <div id="docControls" class="glass card hidden" style="margin-bottom: 20px;">
+                    <h3>Upload Dokumentasi / Arsip</h3>
+                    <input type="text" id="docName" placeholder="Nama Acara">
+                    <input type="date" id="docDate">
+                    <input type="text" id="docLink" placeholder="Link GDrive / Youtube">
+                    <textarea id="docStory" placeholder="Cerita sukses acara ini (untuk arsip)" rows="3"></textarea>
+                    <button class="mt-2" onclick="addDoc()">Simpan Dokumentasi</button>
+                </div>
+                <div id="docGallery" class="grid-cards"></div>
+            </div>
+
+            <div id="tab-divisi" class="tab-content hidden">
+                <div id="divControls" class="glass card hidden" style="margin-bottom: 20px;">
+                    <h3>Edit Jobdesk Divisi</h3>
+                    <select id="divSelect">
+                        <option value="Ketua OSIS">Ketua OSIS</option>
+                        <option value="Wakil">Wakil</option>
+                        <option value="Bendahara">Bendahara</option>
+                        <option value="Sekretaris">Sekretaris</option>
+                        <option value="Logistik">Logistik</option>
+                        <option value="Humas">Humas</option>
+                        <option value="Acara">Acara</option>
+                        <option value="Pdd">PDD</option>
+                        <option value="Keamanan">Keamanan</option>
+                    </select>
+                    <textarea id="divJobdesk" rows="3" placeholder="Jobdesk baru..."></textarea>
+                    <button class="mt-2" onclick="updateDivisi()">Update</button>
+                </div>
+                <div id="divList" class="grid-cards"></div>
+            </div>
+
+            <div id="tab-settings" class="tab-content hidden">
+                <div class="glass card" style="margin-bottom: 20px;">
+                    <h3>Ganti Background Web</h3>
+                    <input type="file" id="bgInput" accept="image/*" onchange="changeBackground()">
+                </div>
+                
+                <div class="glass card" style="margin-bottom: 20px;">
+                    <h3>Notulensi Rapat</h3>
+                    <textarea id="noteInput" placeholder="Tulis hasil rapat..." rows="2"></textarea>
+                    <button class="mt-2" onclick="addNote()">Simpan Notulensi</button>
+                    <div id="noteList" class="mt-2"></div>
+                </div>
+
+                <div id="secretReportSection" class="hidden">
+                     <div class="glass card" style="border: 1px solid var(--danger);">
+                        <h3 style="color: var(--danger);">Kotak Aduan Masuk (Rahasia)</h3>
+                        <div id="reportList"></div>
+                    </div>
+                </div>
+                
+                <div id="reportFormSection">
+                    <div class="glass card">
+                        <h3>Lapor Aduan (Privasi Aman)</h3>
+                        <textarea id="reportText" placeholder="Punya masalah? Ceritakan di sini..." rows="3"></textarea>
+                        <button class="mt-2 secondary" onclick="sendReport()">Kirim ke Ketua</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // --- DATA STATE & INITIALIZATION ---
+        const defaultData = {
+            users: [], // {name, points}
+            logs: [],
+            finance: [], // {type, amount, desc, date}
+            deadlines: [], // {id, title, color, done}
+            docs: [], // {title, date, link, story}
+            notes: [],
+            reports: [],
+            divisions: {
+                "Ketua OSIS": "Memimpin organisasi.",
+                "Wakil": "Mendampingi ketua.",
+                "Bendahara": "Mengelola keuangan.",
+                "Sekretaris": "Administrasi surat.",
+                "Logistik": "Perlengkapan acara.",
+                "Humas": "Hubungan masyarakat.",
+                "Acara": "Konsep kegiatan.",
+                "Pdd": "Dokumentasi & Desain.",
+                "Keamanan": "Menjaga ketertiban."
+            }
+        };
+
+        let db = JSON.parse(localStorage.getItem('osisPRO_DB')) || defaultData;
+        let currentUser = null;
+
+        function saveData() {
+            localStorage.setItem('osisPRO_DB', JSON.stringify(db));
+            renderAll();
+        }
+
+        // --- AUTH SYSTEM ---
+        function togglePasswordInput() {
+            const role = document.getElementById('loginRole').value;
+            const passGroup = document.getElementById('passwordGroup');
+            passGroup.classList.toggle('hidden', role === 'Anggota');
+        }
+
+        function handleLogin() {
+            const name = document.getElementById('loginName').value;
+            const role = document.getElementById('loginRole').value;
+            const pass = document.getElementById('loginPass').value;
+
+            if (!name) return alert("Nama wajib diisi!");
+
+            // Cek Password
+            if (role === 'Bendahara' && pass !== 'bendahara321') return alert("Password Salah!");
+            if (role === 'Ketua' && pass !== 'Ketua 315') return alert("Password Salah!"); // Note spasi
+
+            // Login Success
+            currentUser = { name, role };
+            
+            // Tambah user ke database jika baru (untuk poin)
+            if (!db.users.find(u => u.name === name)) {
+                db.users.push({ name: name, points: 0 });
+                saveData();
+            }
+
+            document.getElementById('login-page').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'flex';
+            document.getElementById('userNameDisplay').innerText = name;
+            document.getElementById('userRoleDisplay').innerText = role;
+
+            setupRoleAccess();
+            renderAll();
+        }
+
+        function logout() {
+            location.reload();
+        }
+
+        function setupRoleAccess() {
+            // Reset visibility
+            document.getElementById('financeControls').classList.add('hidden');
+            document.getElementById('deadlineControls').classList.add('hidden');
+            document.getElementById('docControls').classList.add('hidden');
+            document.getElementById('divControls').classList.add('hidden');
+            document.getElementById('secretReportSection').classList.add('hidden');
+            document.getElementById('reportFormSection').classList.remove('hidden');
+
+            if (currentUser.role === 'Bendahara') {
+                document.getElementById('financeControls').classList.remove('hidden');
+            }
+            if (currentUser.role === 'Ketua') {
+                document.getElementById('deadlineControls').classList.remove('hidden');
+                document.getElementById('docControls').classList.remove('hidden');
+                document.getElementById('divControls').classList.remove('hidden');
+                document.getElementById('secretReportSection').classList.remove('hidden');
+                document.getElementById('reportFormSection').classList.add('hidden'); // Ketua ga butuh lapor ke diri sendiri
+            }
+        }
+
+        // --- RENDERING & FEATURES ---
+        function renderAll() {
+            renderLeaderboard();
+            renderLogs();
+            renderFinance();
+            renderDeadlines();
+            renderDocs();
+            renderDivisi();
+            renderNotes();
+            if(currentUser.role === 'Ketua') renderReports();
+        }
+
+        // 1. POIN & LOGS
+        function submitTask() {
+            const desc = document.getElementById('taskDesc').value;
+            if (!desc) return alert("Isi deskripsi tugas!");
+
+            // Tambah Poin
+            const userIdx = db.users.findIndex(u => u.name === currentUser.name);
+            if (userIdx !== -1) db.users[userIdx].points += 1;
+
+            // Log Aktivitas
+            db.logs.unshift({
+                name: currentUser.name,
+                desc: desc,
+                date: new Date().toLocaleString()
             });
+
+            document.getElementById('taskDesc').value = '';
+            alert("Laporan terkirim! +1 Poin");
+            saveData();
         }
-    }
 
-    function kurangiPoin(targetName) {
-        if(!confirm(`Kurangi poin ${targetName}?`)) return;
-        let user = db.users.find(u => u.name === targetName);
-        if(user && user.points > 0) {
-            user.points -= 1;
-            saveDB();
-            renderPoin();
+        function renderLeaderboard() {
+            const list = document.getElementById('leaderboardList');
+            const sorted = [...db.users].sort((a,b) => b.points - a.points);
+            list.innerHTML = sorted.map((u, i) => `
+                <div style="display:flex; justify-content:space-between; padding:5px; border-bottom:1px solid rgba(255,255,255,0.1)">
+                    <span>#${i+1} ${u.name}</span>
+                    <span style="color:var(--primary); font-weight:bold">${u.points} Poin</span>
+                </div>
+            `).join('');
         }
-    }
 
-    // --- 2. DEADLINE (KETUA BISA HAPUS) ---
-    function renderDeadline() {
-        const form = document.getElementById('deadline-form');
-        form.classList.toggle('hidden', currentRole !== 'Ketua');
-        const list = document.getElementById('deadline-list');
-        list.innerHTML = '';
+        function renderLogs() {
+            const list = document.getElementById('activityLog');
+            list.innerHTML = db.logs.map(log => `
+                <li style="font-size:0.9rem; margin-bottom:5px; padding:5px; background:rgba(255,255,255,0.05); border-radius:5px;">
+                    <strong>${log.name}</strong>: ${log.desc} <br>
+                    <small style="color:#94a3b8">${log.date}</small>
+                </li>
+            `).join('');
+        }
 
-        db.deadlines.forEach(d => {
-            const isDoneClass = d.isDone ? 'deadline-done' : '';
-            const adminControls = currentRole === 'Ketua' ? `<button onclick="deleteDeadline(${d.id})" class="btn-danger btn-small" style="float:right; margin-left:5px;"><i class="fas fa-trash"></i></button>` : '';
-            const btnSelesai = !d.isDone ? `<button onclick="toggleDeadline(${d.id})" class="btn-success btn-small" style="float:right;">Selesai</button>` : '';
+        // 2. KEUANGAN
+        function addTransaction() {
+            const type = document.getElementById('finType').value;
+            const amount = parseInt(document.getElementById('finAmount').value);
+            const desc = document.getElementById('finDesc').value;
 
-            list.innerHTML += `
-            <div class="deadline-card ${isDoneClass}" style="border-left-color: ${d.color};">
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <strong>${d.ket}</strong>
-                    <div>${btnSelesai}${adminControls}</div>
+            if (!amount || !desc) return alert("Lengkapi data!");
+
+            db.finance.push({ type, amount, desc, date: new Date().toLocaleDateString() });
+            document.getElementById('finAmount').value = '';
+            document.getElementById('finDesc').value = '';
+            saveData();
+        }
+
+        function renderFinance() {
+            let total = 0;
+            const tbody = document.getElementById('financeTable');
+            tbody.innerHTML = db.finance.map((f, i) => {
+                if (f.type === 'in') total += f.amount;
+                else total -= f.amount;
+                
+                const deleteBtn = currentUser.role === 'Bendahara' ? 
+                    `<i class="fas fa-trash" style="color:var(--danger); cursor:pointer;" onclick="deleteFinance(${i})"></i>` : '';
+
+                return `
+                <tr>
+                    <td>${f.date}</td>
+                    <td>${f.desc}</td>
+                    <td style="color: ${f.type === 'in' ? 'var(--success)' : 'var(--danger)'}">
+                        ${f.type === 'in' ? '+' : '-'} Rp ${f.amount.toLocaleString()}
+                    </td>
+                    <td>${deleteBtn}</td>
+                </tr>`;
+            }).join('');
+            document.getElementById('totalSaldo').innerText = `Rp ${total.toLocaleString()}`;
+        }
+
+        function deleteFinance(idx) {
+            if (confirm("Hapus transaksi ini?")) {
+                db.finance.splice(idx, 1);
+                saveData();
+            }
+        }
+
+        // 3. DEADLINE
+        function addDeadline() {
+            const title = document.getElementById('dlTitle').value;
+            const color = document.getElementById('dlColor').value;
+            if(!title) return;
+
+            db.deadlines.push({ title, color, done: false });
+            document.getElementById('dlTitle').value = '';
+            saveData();
+        }
+
+        function renderDeadlines() {
+            const list = document.getElementById('deadlineList');
+            list.innerHTML = db.deadlines.map((dl, i) => `
+                <div class="task-item">
+                    <div class="${dl.done ? 'task-done' : ''}">
+                        <span class="badge" style="background:${dl.color}">&nbsp;</span>
+                        ${dl.title}
+                    </div>
+                    <div>
+                        <button onclick="toggleDone(${i})" class="secondary" style="padding:5px 10px; font-size:0.8rem;">
+                            ${dl.done ? 'Batal' : 'Selesai'}
+                        </button>
+                        ${currentUser.role === 'Ketua' ? 
+                        `<button onclick="deleteDeadline(${i})" class="danger" style="padding:5px 10px; font-size:0.8rem;">X</button>` : ''}
+                    </div>
                 </div>
-                <small>${d.date}</small>
-            </div>`;
-        });
-    }
+            `).join('');
+        }
 
-    function submitDeadline() {
-        const ket = document.getElementById('dl-ket').value;
-        const tgl = document.getElementById('dl-tgl').value;
-        const color = document.getElementById('dl-color').value;
-        if(!ket || !tgl) return alert("Lengkapi data!");
-        
-        db.deadlines.push({ id: Date.now(), ket, date: tgl, color, isDone: false });
-        saveDB(); renderDeadline();
-    }
-    function toggleDeadline(id) { let item = db.deadlines.find(d => d.id === id); if(item) { item.isDone = true; saveDB(); renderDeadline(); } }
-    function deleteDeadline(id) { if(confirm("Hapus deadline?")) { db.deadlines = db.deadlines.filter(d => d.id !== id); saveDB(); renderDeadline(); } }
+        function toggleDone(i) {
+            db.deadlines[i].done = !db.deadlines[i].done;
+            saveData();
+        }
+        function deleteDeadline(i) {
+            db.deadlines.splice(i, 1);
+            saveData();
+        }
 
-    // --- 3. DOKUMENTASI ---
-    function renderDokumentasi() {
-        const form = document.getElementById('doc-form');
-        form.classList.toggle('hidden', currentRole !== 'Ketua');
-        const list = document.getElementById('doc-list');
-        list.innerHTML = '';
+        // 4. DOKUMENTASI
+        function addDoc() {
+            const title = document.getElementById('docName').value;
+            const link = document.getElementById('docLink').value;
+            const story = document.getElementById('docStory').value;
+            
+            if(!title || !link) return alert("Judul dan Link wajib!");
 
-        db.docs.forEach(doc => {
-            const deleteBtn = currentRole === 'Ketua' ? `<button onclick="deleteDoc(event, ${doc.id})" class="btn-danger btn-small" style="margin-top:10px; width:100%;">Hapus</button>` : '';
-            list.innerHTML += `
-            <div class="doc-card" onclick="window.open('${doc.link}', '_blank')">
-                <i class="fas fa-folder-open doc-icon"></i>
-                <div style="overflow:hidden;">
-                    <h4 style="margin:0;">${doc.nama}</h4>
-                    <small style="color:var(--accent);">${doc.tgl}</small>
-                    <p style="font-size:0.8rem; margin-top:5px; opacity:0.7;">Klik untuk melihat dokumentasi</p>
+            db.docs.push({ title, link, story, date: new Date().toLocaleDateString() });
+            saveData();
+            alert("Dokumentasi tersimpan!");
+        }
+
+        function renderDocs() {
+            const gallery = document.getElementById('docGallery');
+            const latestInfo = document.getElementById('latestInfo');
+            
+            // Render Cards
+            gallery.innerHTML = db.docs.map(doc => `
+                <div class="glass card" onclick="window.open('${doc.link}', '_blank')" style="cursor:pointer; transition:0.3s;">
+                    <h4><i class="fas fa-external-link-alt"></i> ${doc.title}</h4>
+                    <small>${doc.date}</small>
+                    <p class="mt-2 text-sm">"${doc.story}"</p>
                 </div>
-                ${deleteBtn}
-            </div>`;
-        });
-    }
-    function submitDokumentasi() {
-        const nama = document.getElementById('doc-nama').value;
-        const tgl = document.getElementById('doc-tgl').value;
-        const link = document.getElementById('doc-link').value;
-        if(!nama || !link) return alert("Data kurang lengkap!");
-        db.docs.push({ id: Date.now(), nama, tgl, link });
-        saveDB(); renderDokumentasi(); document.getElementById('doc-nama').value=''; document.getElementById('doc-link').value='';
-    }
-    function deleteDoc(e, id) { e.stopPropagation(); if(confirm("Hapus?")) { db.docs = db.docs.filter(d => d.id !== id); saveDB(); renderDokumentasi(); } }
+            `).join('');
 
-    // --- 4. ACARA SELESAI ---
-    function renderAcaraSelesai() {
-        const form = document.getElementById('finished-form');
-        form.classList.toggle('hidden', currentRole !== 'Ketua');
-        const list = document.getElementById('finished-list');
-        list.innerHTML = '';
-        db.finishedEvents.forEach(ev => {
-            list.innerHTML += `
-            <div class="list-item" style="display:block;">
-                <p style="white-space: pre-wrap;">${ev.desc}</p>
-                <hr style="border-color:rgba(255,255,255,0.1); margin:10px 0;">
-                <small style="opacity:0.6;">Diarsipkan: ${ev.date}</small>
-                ${currentRole === 'Ketua' ? `<button onclick="deleteAcara(${ev.id})" class="btn-danger btn-small" style="float:right;">Hapus</button><div style="clear:both;"></div>` : ''}
-            </div>`;
-        });
-    }
-    function submitAcaraSelesai() {
-        const desc = document.getElementById('finished-desc').value;
-        if(!desc) return;
-        db.finishedEvents.push({ id: Date.now(), desc, date: new Date().toLocaleDateString() });
-        saveDB(); document.getElementById('finished-desc').value = ''; renderAcaraSelesai();
-    }
-    function deleteAcara(id) { if(confirm("Hapus arsip?")) { db.finishedEvents = db.finishedEvents.filter(e => e.id !== id); saveDB(); renderAcaraSelesai(); } }
+            // Update Info Terbaru di Dashboard
+            if(db.docs.length > 0) {
+                const latest = db.docs[db.docs.length - 1];
+                latestInfo.innerHTML = `<strong>${latest.title}</strong> sukses dilaksanakan!<br>"${latest.story}"`;
+            }
+        }
 
-    // --- OTHER ---
-    function renderKeuangan() {
-        document.getElementById('keuangan-form').classList.toggle('hidden', currentRole !== 'Bendahara');
-        let total = 0; const list = document.getElementById('keuangan-list'); list.innerHTML = '';
-        db.finance.forEach(f => {
-            let val = parseInt(f.amount); if(f.type === 'keluar') val = -val; total += val;
-            const color = f.type === 'masuk' ? '#22c55e' : '#ef4444';
-            list.innerHTML += `<div class="list-item"><div><strong>${f.ket}</strong><br><small>${new Date(f.date).toLocaleDateString()}</small></div><div style="text-align:right; color:${color}; font-weight:bold;">${f.type === 'masuk' ? '+' : '-'} Rp ${parseInt(f.amount).toLocaleString()}</div>${currentRole === 'Bendahara' ? `<button onclick="delKeuangan(${f.id})" class="btn-danger btn-small" style="margin-left:10px;">X</button>` : ''}</div>`;
-        });
-        document.getElementById('saldo-total').innerText = `Rp ${total.toLocaleString()}`;
-    }
-    function submitKeuangan() {
-        const ket = document.getElementById('keuangan-ket').value; const jml = document.getElementById('keuangan-jml').value; const tipe = document.getElementById('keuangan-tipe').value;
-        if(!ket || !jml) return;
-        db.finance.push({ id: Date.now(), ket, amount: jml, type: tipe, date: new Date() });
-        saveDB(); renderKeuangan(); document.getElementById('keuangan-ket').value=''; document.getElementById('keuangan-jml').value='';
-    }
-    function delKeuangan(id) { if(confirm("Hapus?")) { db.finance = db.finance.filter(f => f.id !== id); saveDB(); renderKeuangan(); } }
+        // 5. DIVISI
+        function updateDivisi() {
+            const divName = document.getElementById('divSelect').value;
+            const job = document.getElementById('divJobdesk').value;
+            if(!job) return;
 
-    function renderNotulensi() {
-        const list = document.getElementById('notulensi-list'); list.innerHTML = '';
-        db.minutes.forEach(n => {
-            list.innerHTML += `<div style="background:rgba(255,255,255,0.1); padding:10px; margin-bottom:10px; border-radius:10px;"><div onclick="this.nextElementSibling.classList.toggle('hidden')" style="cursor:pointer; font-weight:bold;">${n.title} <i class="fas fa-chevron-down" style="float:right;"></i></div><div class="hidden" style="margin-top:10px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.2);"><small>${n.date}</small><p>${n.content}</p><button onclick="delNotulensi(${n.id})" class="btn-danger btn-small">Hapus</button></div></div>`;
-        });
-    }
-    function submitNotulensi() {
-        const judul = document.getElementById('notulensi-judul').value; const tgl = document.getElementById('notulensi-tgl').value; const isi = document.getElementById('notulensi-isi').value;
-        if(!judul) return; db.minutes.push({ id: Date.now(), title: judul, date: tgl, content: isi }); saveDB(); renderNotulensi(); document.getElementById('notulensi-judul').value=''; document.getElementById('notulensi-isi').value='';
-    }
-    function delNotulensi(id) { if(confirm("Hapus?")) { db.minutes = db.minutes.filter(m => m.id !== id); saveDB(); renderNotulensi(); } }
+            db.divisions[divName] = job;
+            saveData();
+            alert("Jobdesk diupdate!");
+        }
 
-    function openDivisi(name) { currentDivisiEditing = name; nav('page-detail-divisi'); document.getElementById('divisi-title').innerText = `Divisi: ${name}`; const content = db.divisi[name] || "Belum ada jobdesk."; document.getElementById('divisi-view').innerText = content; document.getElementById('divisi-input').value = content; document.getElementById('divisi-editor').classList.toggle('hidden', currentRole !== 'Ketua'); }
-    function saveDivisi() { db.divisi[currentDivisiEditing] = document.getElementById('divisi-input').value; saveDB(); document.getElementById('divisi-view').innerText = document.getElementById('divisi-input').value; alert("Tersimpan!"); }
+        function renderDivisi() {
+            const container = document.getElementById('divList');
+            let html = '';
+            for (const [div, job] of Object.entries(db.divisions)) {
+                html += `
+                <div class="glass card">
+                    <h4 style="color:var(--accent)">${div}</h4>
+                    <p class="text-sm mt-2">${job}</p>
+                </div>`;
+            }
+            container.innerHTML = html;
+        }
 
-    function renderJuknis() { document.getElementById('juknis-content').innerHTML = '<ol style="padding-left:20px;">' + db.juknis.map(j => `<li>${j}</li>`).join('') + '</ol>'; if(currentRole === 'Ketua') document.getElementById('btn-edit-juknis').classList.remove('hidden'); }
-    function editJuknis() { const res = prompt("Update Juknis (pisahkan koma):", db.juknis.join(',')); if(res) { db.juknis = res.split(','); saveDB(); renderJuknis(); } }
+        // 6. FITUR TAMBAHAN (Note & Report)
+        function addNote() {
+            const txt = document.getElementById('noteInput').value;
+            if(!txt) return;
+            db.notes.push({ txt, date: new Date().toLocaleDateString() });
+            document.getElementById('noteInput').value = '';
+            saveData();
+        }
 
-    function sendReport() { const isi = document.getElementById('report-isi').value; if(!isi) return; db.reports.push({ id: Date.now(), content: isi, date: new Date().toLocaleDateString() }); saveDB(); document.getElementById('report-isi').value=''; alert("Terkirim ke Ketua"); }
-    function renderReport() { if(currentRole !== 'Ketua') { document.getElementById('report-list-container').classList.add('hidden'); return; } document.getElementById('report-list-container').classList.remove('hidden'); const list = document.getElementById('report-list'); list.innerHTML = ''; db.reports.forEach(r => { list.innerHTML += `<div class="list-item"><div>${r.content}</div><small>${r.date}</small></div>`; }); }
+        function renderNotes() {
+            document.getElementById('noteList').innerHTML = db.notes.map((n, i) => `
+                <div style="background:rgba(0,0,0,0.2); padding:5px; margin-bottom:5px; border-radius:4px; display:flex; justify-content:space-between;">
+                    <span>${n.txt}</span>
+                    <i class="fas fa-times" onclick="deleteNote(${i})" style="cursor:pointer; color:var(--danger)"></i>
+                </div>
+            `).join('');
+        }
+        function deleteNote(i) { db.notes.splice(i,1); saveData(); }
 
-    function changeBackground() { const file = document.getElementById('bg-file').files[0]; if (file) { const reader = new FileReader(); reader.onload = function(e) { document.body.style.backgroundImage = `url(${e.target.result})`; db.customBg = e.target.result; saveDB(); }; reader.readAsDataURL(file); } }
-    function resetBackground() { db.customBg = null; saveDB(); document.body.style.backgroundImage = ''; }
-</script>
+        function sendReport() {
+            const txt = document.getElementById('reportText').value;
+            if(!txt) return;
+            db.reports.push({ txt, date: new Date().toLocaleString() });
+            document.getElementById('reportText').value = '';
+            alert("Aduan terkirim secara anonim.");
+            saveData();
+        }
+
+        function renderReports() {
+            document.getElementById('reportList').innerHTML = db.reports.map(r => `
+                <div style="background:rgba(239, 68, 68, 0.1); padding:10px; margin-bottom:10px; border-left:3px solid var(--danger);">
+                    <small>${r.date}</small>
+                    <p>${r.txt}</p>
+                </div>
+            `).join('');
+        }
+
+        function changeBackground() {
+            const file = document.getElementById('bgInput').files[0];
+            if(file) {
+                const reader = new FileReader();
+                reader.onloadend = function() {
+                    document.body.style.backgroundImage = `url('${reader.result}')`;
+                    // Simpan preferensi bg (opsional, perlu localstorage terpisah agar tidak berat)
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // --- UTILS ---
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById('tab-' + tabId).classList.remove('hidden');
+            
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            // Set active class logic here if needed based on click
+            
+            // Update Title
+            const titles = {
+                'home': 'Dashboard Utama',
+                'tasks': 'Laporan Tugas & Poin',
+                'finance': 'Data Keuangan',
+                'deadlines': 'Deadline Tugas',
+                'docs': 'Arsip & Dokumentasi',
+                'divisi': 'Info Divisi',
+                'settings': 'Pengaturan'
+            };
+            document.getElementById('pageTitle').innerText = titles[tabId];
+        }
+
+        // Set Date
+        setInterval(() => {
+            document.getElementById('dateDisplay').innerText = new Date().toLocaleString('id-ID');
+        }, 1000);
+
+    </script>
 </body>
 </html>
