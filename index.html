@@ -374,7 +374,23 @@
         </div>
     </div>
 
-    <script>
+    <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+  import { getDatabase } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyA3xu87P6zbFiV0dl0k...",
+    authDomain: "osis-s1c.firebaseapp.com",
+    databaseURL: "https://osis-s1c-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "osis-s1c",
+    storageBucket: "osis-s1c.appspot.com",
+    messagingSenderId: "338254985414",
+    appId: "1:338254985414:web:xxxx"
+  };
+
+  // INIT
+  window.app = initializeApp(firebaseConfig);
+  window.dbFirebase = getDatabase(app);
         // --- DATA STATE & INITIALIZATION ---
         const defaultData = {
             users: [], // {name, points}
