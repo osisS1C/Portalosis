@@ -142,8 +142,21 @@
             margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;
         }
         .list-item.done { text-decoration: line-through; opacity: 0.6; }
-        .tag { padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: bold; }
-        .tag-red { background: #ef4444; } .tag-green { background: #10b981; } .tag-blue { background: #3b82f6; }
+        
+        /* --- WARNA TAG BARU (10 OPSI) --- */
+        .tag { padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: bold; color: white; text-transform: uppercase; letter-spacing: 0.5px; }
+        
+        .tag-all { background: #ef4444; } /* Merah - Semua */
+        .tag-ketua { background: #eab308; color: black; } /* Kuning - Ketua */
+        .tag-wakil { background: #f97316; } /* Orange - Wakil */
+        .tag-bendahara { background: #10b981; } /* Hijau - Bendahara */
+        .tag-sekretaris { background: #06b6d4; } /* Cyan - Sekretaris */
+        .tag-logistik { background: #78716c; } /* Abu - Logistik */
+        .tag-humas { background: #8b5cf6; } /* Ungu - Humas */
+        .tag-acara { background: #ec4899; } /* Pink - Acara */
+        .tag-pdd { background: #3b82f6; } /* Biru - PDD */
+        .tag-keamanan { background: #6366f1; } /* Indigo - Keamanan */
+
 
         /* Specific Features */
         .finance-summary { font-size: 2rem; font-weight: bold; text-align: center; margin: 20px 0; color: #4ade80; }
@@ -407,12 +420,20 @@
             <div class="modal-content">
                 <h3>Tambah Deadline</h3>
                 <input type="text" id="dlTask" placeholder="Nama Tugas">
-                <select id="dlColor">
-                    <option value="tag-red">Merah (Penting)</option>
-                    <option value="tag-blue">Biru (Sedang)</option>
-                    <option value="tag-green">Hijau (Santai)</option>
+                <label style="display:block; margin: 10px 0 5px 0; font-size:0.9rem;">Pilih Kategori/Divisi:</label>
+                <select id="dlColor" class="form-select">
+                    <option value="tag-all">🔴 UNTUK SEMUA (Penting)</option>
+                    <option value="tag-ketua">👑 Ketua OSIS</option>
+                    <option value="tag-wakil">🔸 Wakil Ketua</option>
+                    <option value="tag-bendahara">💵 Bendahara</option>
+                    <option value="tag-sekretaris">📝 Sekretaris</option>
+                    <option value="tag-logistik">📦 Logistik</option>
+                    <option value="tag-humas">📢 Humas</option>
+                    <option value="tag-acara">🎉 Acara</option>
+                    <option value="tag-pdd">📸 PDD (Dokumentasi)</option>
+                    <option value="tag-keamanan">🛡️ Keamanan</option>
                 </select>
-                <button class="btn" onclick="submitDeadline()">Simpan</button>
+                <button class="btn" onclick="submitDeadline()" style="margin-top:15px;">Simpan</button>
                 <button class="btn btn-danger" style="margin-top: 10px;" onclick="closeModal('deadlineModal')">Batal</button>
             </div>
         </div>
@@ -719,11 +740,25 @@
                         const deleteBtn = currentUser.role === 'Ketua' ? 
                             `<button class="btn-small btn-danger" onclick="deleteItem('deadlines/${key}')">Hapus</button>` : '';
                         const toggleAction = `onclick="toggleDeadline('${key}', '${item.status}')"`;
+                        
+                        // Map tag class to Readable Text for Display if needed, but color is enough
+                        let labelText = "";
+                        if(item.color.includes('ketua')) labelText = "KETUA";
+                        else if(item.color.includes('wakil')) labelText = "WAKIL";
+                        else if(item.color.includes('bendahara')) labelText = "BENDAHARA";
+                        else if(item.color.includes('sekretaris')) labelText = "SEKRETARIS";
+                        else if(item.color.includes('logistik')) labelText = "LOGISTIK";
+                        else if(item.color.includes('humas')) labelText = "HUMAS";
+                        else if(item.color.includes('acara')) labelText = "ACARA";
+                        else if(item.color.includes('pdd')) labelText = "PDD";
+                        else if(item.color.includes('keamanan')) labelText = "KEAMANAN";
+                        else labelText = "SEMUA";
+
                         list.innerHTML += `
                             <div class="list-item ${isDone ? 'done' : ''}">
                                 <div ${toggleAction} style="cursor:pointer; flex:1;">
-                                    <span class="tag ${item.color}">${isDone ? 'SELESAI' : 'DEADLINE'}</span>
-                                    <span style="margin-left: 10px;">${item.task}</span>
+                                    <span class="tag ${item.color}">${labelText}</span>
+                                    <span style="margin-left: 10px; display:inline-block; vertical-align:middle;">${item.task}</span>
                                 </div>
                                 ${deleteBtn}
                             </div>
@@ -806,7 +841,6 @@
 
         // 7. ACARA SELESAI
         window.loadAcara = () => {
-            // Only Ketua can add
             if(currentUser.role === 'Ketua') {
                 document.getElementById('acaraInputArea').style.display = 'block';
             } else {
@@ -894,7 +928,6 @@
                 document.getElementById('aduanFormView').style.display = 'none';
                 document.getElementById('aduanInboxView').style.display = 'block';
                 
-                // Load Messages for Ketua
                 onValue(ref(db, 'reports'), (snapshot) => {
                     const list = document.getElementById('aduanList');
                     list.innerHTML = "";
@@ -930,7 +963,7 @@
 
             push(ref(db, 'reports'), {
                 content: content,
-                sender: currentUser.name, // Still tracking name but only Ketua sees it
+                sender: currentUser.name, 
                 date: new Date().toLocaleString()
             });
             document.getElementById('aduanText').value = "";
@@ -955,7 +988,6 @@
             setTimeout(() => t.style.display = 'none', 3000);
         }
 
-        // Background Change (Local Only)
         document.getElementById('bgInput').addEventListener('change', function() {
             const reader = new FileReader();
             reader.onload = function(e) {
@@ -965,7 +997,6 @@
             reader.readAsDataURL(this.files[0]);
         });
 
-        // Auto Login Check
         if(currentUser) initDashboard();
 
     </script>
