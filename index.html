@@ -3,244 +3,434 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Manajemen OSIS PRO (Online)</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Sistem Manajemen OSIS PRO</title>
     
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
-        /* CSS SAMA SEPERTI SEBELUMNYA */
         :root {
-            --bg-color: #0f172a;
-            --glass-bg: rgba(255, 255, 255, 0.05);
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --primary: #3b82f6;
-            --accent: #8b5cf6;
-            --text: #e2e8f0;
-            --success: #10b981;
-            --danger: #ef4444;
+            --primary: #2563eb;
+            --secondary: #3b82f6;
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-color: #ffffff;
+            --bg-gradient: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
         }
+
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
         body {
-            background-color: var(--bg-color);
-            color: var(--text);
+            background: var(--bg-gradient);
+            color: var(--text-color);
             min-height: 100vh;
-            background-image: radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.2) 0%, transparent 20%),
-                              radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.2) 0%, transparent 20%);
-            background-size: cover; background-position: center; background-attachment: fixed;
+            background-attachment: fixed;
+            background-size: cover;
+            overflow-x: hidden;
         }
+
+        /* Utility Class for Glassmorphism */
         .glass {
-            background: var(--glass-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-            border: 1px solid var(--glass-border); border-radius: 16px; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
         }
-        #login-page { display: flex; justify-content: center; align-items: center; height: 100vh; z-index: 100; position: relative; }
-        .login-card { width: 100%; max-width: 400px; padding: 2rem; text-align: center; }
-        .input-group { margin-bottom: 1.5rem; text-align: left; }
-        input, select, textarea {
-            width: 100%; padding: 12px; margin-top: 5px; background: rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--glass-border); color: white; border-radius: 8px; outline: none; transition: 0.3s;
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            width: 100%;
         }
-        input:focus { border-color: var(--primary); }
-        button {
-            width: 100%; padding: 12px; background: linear-gradient(135deg, var(--primary), var(--accent));
-            border: none; color: white; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s;
+
+        .btn:hover { background: var(--secondary); transform: translateY(-2px); }
+        .btn-danger { background: #ef4444; }
+        .btn-danger:hover { background: #dc2626; }
+        .btn-success { background: #10b981; }
+        .btn-small { width: auto; padding: 6px 12px; font-size: 0.8rem; }
+
+        /* --- VIEWS --- */
+        .view { display: none; padding: 20px; animation: fadeIn 0.5s ease; max-width: 1200px; margin: 0 auto; }
+        .view.active { display: block; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- LOGIN VIEW --- */
+        #login-view {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        button:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4); }
-        button.secondary { background: #475569; } button.danger { background: var(--danger); }
-        #dashboard { display: none; height: 100vh; overflow: hidden; }
-        .sidebar { width: 260px; height: 100%; padding: 1.5rem; display: flex; flex-direction: column; border-right: 1px solid var(--glass-border); }
-        .nav-item { padding: 12px; margin-bottom: 8px; border-radius: 8px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 10px; color: #94a3b8; }
-        .nav-item:hover, .nav-item.active { background: rgba(255,255,255,0.1); color: white; }
-        .main-content { flex: 1; padding: 2rem; overflow-y: auto; }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
-        .grid-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
-        .card { padding: 1.5rem; }
-        .task-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid var(--glass-border); }
-        .task-done { text-decoration: line-through; color: var(--success); opacity: 0.7; }
-        .badge { padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; }
-        @media (max-width: 768px) {
-            #dashboard { flex-direction: column; }
-            .sidebar { width: 100%; height: auto; flex-direction: row; overflow-x: auto; padding: 1rem; border-right: none; border-bottom: 1px solid var(--glass-border); }
-            .nav-item { font-size: 0.8rem; white-space: nowrap; }
-            .main-content { padding: 1rem; }
+
+        .login-card {
+            background: white; 
+            color: #333;
+            padding: 40px 30px;
+            border-radius: 24px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
         }
-        .hidden { display: none !important; } .text-sm { font-size: 0.85rem; color: #cbd5e1; } .mt-2 { margin-top: 1rem; }
+
+        .login-card h2 { color: #1e3a8a; margin-bottom: 5px; font-weight: 700; }
+        .login-card p { color: #64748b; margin-bottom: 30px; font-size: 0.9rem; }
         
-        /* Loading Overlay */
-        #loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-color); z-index: 999; display: flex; justify-content: center; align-items: center; flex-direction: column; }
-        .spinner { width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.1); border-top: 4px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .form-group { text-align: left; margin-bottom: 20px; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 8px; color: #0f172a; }
+        .form-input, .form-select {
+            width: 100%; padding: 12px; border: 2px solid #e2e8f0;
+            border-radius: 12px; outline: none; transition: 0.3s;
+            background: #f8fafc; color: #333;
+        }
+        .form-input:focus { border-color: var(--primary); background: white; }
+
+        /* --- DASHBOARD VIEW --- */
+        header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 30px; padding-bottom: 15px; border-bottom: 1px solid var(--glass-border);
+        }
+        
+        .user-info h3 { font-size: 1.5rem; }
+        .user-info span { font-size: 0.9rem; opacity: 0.8; background: rgba(37, 99, 235, 0.3); padding: 4px 10px; border-radius: 20px; }
+
+        .grid-menu {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        @media (min-width: 768px) {
+            .grid-menu { grid-template-columns: repeat(4, 1fr); gap: 20px; }
+        }
+
+        .menu-card {
+            padding: 25px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            min-height: 140px;
+            background: rgba(30, 58, 138, 0.4); 
+        }
+
+        .menu-card:hover { background: rgba(37, 99, 235, 0.6); transform: translateY(-5px); }
+        .menu-card i { font-size: 2.5rem; margin-bottom: 15px; color: #93c5fd; }
+        .menu-card h4 { font-weight: 600; font-size: 0.95rem; }
+
+        /* --- FEATURE VIEWS GENERIC --- */
+        .feature-header { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
+        .back-btn { background: rgba(255,255,255,0.1); padding: 10px 15px; border-radius: 50%; cursor: pointer; }
+        
+        .content-card { padding: 20px; margin-bottom: 20px; }
+        
+        /* List Items */
+        .list-item {
+            background: rgba(255,255,255,0.05);
+            padding: 15px; border-radius: 12px;
+            margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;
+        }
+        .list-item.done { text-decoration: line-through; opacity: 0.6; }
+        .tag { padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: bold; }
+        .tag-red { background: #ef4444; } .tag-green { background: #10b981; } .tag-blue { background: #3b82f6; }
+
+        /* Specific Features */
+        .finance-summary { font-size: 2rem; font-weight: bold; text-align: center; margin: 20px 0; color: #4ade80; }
+        
+        /* Floating Add Button */
+        .fab {
+            position: fixed; bottom: 30px; right: 30px;
+            background: var(--primary); width: 60px; height: 60px;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; box-shadow: 0 10px 20px rgba(0,0,0,0.3); cursor: pointer;
+        }
+
+        /* Modal */
+        .modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center;
+            z-index: 1000; opacity: 0; pointer-events: none; transition: 0.3s;
+        }
+        .modal.active { opacity: 1; pointer-events: all; }
+        .modal-content { background: #1e293b; padding: 30px; border-radius: 16px; width: 90%; max-width: 500px; }
+        .modal-content input, .modal-content select, .modal-content textarea {
+            width: 100%; background: #0f172a; border: 1px solid #334155; color: white; padding: 10px; margin-bottom: 15px; border-radius: 8px;
+        }
+
+        /* Documentation Grid */
+        .doc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; }
+        .doc-card { background: white; color: #333; padding: 15px; border-radius: 12px; cursor: pointer; transition: 0.3s; }
+        .doc-card:hover { transform: scale(1.02); }
+        .doc-card h5 { font-size: 1.1rem; color: var(--primary); margin-bottom: 5px; }
+        .doc-card small { color: #64748b; }
+
     </style>
 </head>
 <body>
 
-    <div id="loader">
-        <div class="spinner"></div>
-        <p class="mt-2">Menghubungkan Database...</p>
-    </div>
+    <div id="app">
+        <div id="toast" style="position: fixed; top: 20px; right: 20px; background: #333; color: white; padding: 12px 24px; border-radius: 8px; z-index: 2000; display: none;"></div>
 
-    <div id="login-page" class="hidden">
-        <div class="glass login-card">
-            <h2 style="margin-bottom: 20px;"><i class="fas fa-satellite-dish"></i> OSIS PRO ONLINE</h2>
-            <div class="input-group">
-                <label>Nama Anda</label>
-                <input type="text" id="loginName" placeholder="Masukkan nama...">
-            </div>
-            <div class="input-group">
-                <label>Pilih Role</label>
-                <select id="loginRole" onchange="togglePasswordInput()">
-                    <option value="Anggota">Anggota</option>
-                    <option value="Bendahara">Bendahara</option>
-                    <option value="Ketua">Ketua</option>
-                </select>
-            </div>
-            <div class="input-group hidden" id="passwordGroup">
-                <label>Password Khusus</label>
-                <input type="password" id="loginPass" placeholder="Password...">
-            </div>
-            <button onclick="handleLogin()">MASUK <i class="fas fa-arrow-right"></i></button>
-        </div>
-    </div>
+        <div id="login-view" class="view active">
+            <div class="login-card">
+                <h2>Selamat Datang</h2>
+                <p>Sistem Manajemen OSIS</p>
 
-    <div id="dashboard">
-        <div class="glass sidebar">
-            <h3 style="margin-bottom: 20px; text-align: center;">OSIS ONLINE</h3>
-            <div class="nav-item active" onclick="switchTab('home')"><i class="fas fa-home"></i> Dashboard</div>
-            <div class="nav-item" onclick="switchTab('tasks')"><i class="fas fa-tasks"></i> Tugas & Poin</div>
-            <div class="nav-item" onclick="switchTab('finance')"><i class="fas fa-wallet"></i> Keuangan</div>
-            <div class="nav-item" onclick="switchTab('deadlines')"><i class="fas fa-clock"></i> Deadline</div>
-            <div class="nav-item" onclick="switchTab('docs')"><i class="fas fa-folder-open"></i> Arsip</div>
-            <div class="nav-item" onclick="switchTab('divisi')"><i class="fas fa-users"></i> Divisi</div>
-            <div style="flex-grow: 1;"></div>
-            <div class="nav-item" style="color: var(--danger);" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</div>
-        </div>
-
-        <div class="main-content">
-            <div class="header glass" style="padding: 15px; border-radius: 12px;">
-                <div>
-                    <h2 id="pageTitle">Dashboard</h2>
-                    <p class="text-sm">Login: <span id="userNameDisplay" style="color:var(--primary)">User</span></p>
+                <div class="form-group">
+                    <label>Nama Pengguna</label>
+                    <input type="text" id="loginName" class="form-input" placeholder="Siapa nama Anda?">
                 </div>
-                <div class="text-sm"><span style="color:var(--success)">● Online</span></div>
-            </div>
 
-            <div id="tab-home" class="tab-content">
-                <div class="grid-cards">
-                    <div class="glass card">
-                        <h3><i class="fas fa-star" style="color: gold;"></i> Klasemen Poin</h3>
-                        <div id="leaderboardList" class="mt-2">Loading...</div>
-                    </div>
-                    <div class="glass card">
-                        <h3>Riwayat Log Aktivitas</h3>
-                        <ul id="activityLog" class="mt-2" style="list-style: none; max-height: 200px; overflow-y: auto;"></ul>
-                    </div>
-                </div>
-            </div>
-
-            <div id="tab-tasks" class="tab-content hidden">
-                <div class="glass card">
-                    <h3>Lapor Tugas (+1 Poin)</h3>
-                    <input type="text" id="taskDesc" placeholder="Deskripsi tugas...">
-                    <button class="mt-2" onclick="submitTask()">Kirim Laporan</button>
-                </div>
-            </div>
-
-            <div id="tab-finance" class="tab-content hidden">
-                <div class="glass card" style="text-align: center; margin-bottom: 1rem;">
-                    <p>Total Kas OSIS</p>
-                    <h1 id="totalSaldo" style="color: var(--success);">Rp 0</h1>
-                </div>
-                <div id="financeControls" class="glass card hidden" style="margin-bottom: 1rem;">
-                    <h3>Input Transaksi</h3>
-                    <select id="finType"><option value="in">Masuk (+)</option><option value="out">Keluar (-)</option></select>
-                    <input type="number" id="finAmount" placeholder="Nominal">
-                    <input type="text" id="finDesc" placeholder="Keterangan">
-                    <button class="mt-2" onclick="addTransaction()">Simpan</button>
-                </div>
-                <div class="glass card">
-                    <table style="width: 100%;">
-                        <thead><tr><th>Ket</th><th>Jml</th><th>Aksi</th></tr></thead>
-                        <tbody id="financeTable"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div id="tab-deadlines" class="tab-content hidden">
-                <div id="deadlineControls" class="glass card hidden" style="margin-bottom: 1rem;">
-                    <h3>Tambah Deadline</h3>
-                    <input type="text" id="dlTitle" placeholder="Nama Tugas">
-                    <input type="color" id="dlColor" value="#ef4444">
-                    <button class="mt-2" onclick="addDeadline()">Tambah</button>
-                </div>
-                <div class="glass card" id="deadlineList"></div>
-            </div>
-
-            <div id="tab-docs" class="tab-content hidden">
-                <div id="docControls" class="glass card hidden" style="margin-bottom: 1rem;">
-                    <h3>Upload Arsip</h3>
-                    <input type="text" id="docName" placeholder="Nama Acara">
-                    <input type="text" id="docLink" placeholder="Link GDrive/Youtube">
-                    <textarea id="docStory" placeholder="Cerita singkat..." rows="2"></textarea>
-                    <button class="mt-2" onclick="addDoc()">Simpan</button>
-                </div>
-                <div id="docGallery" class="grid-cards"></div>
-            </div>
-
-            <div id="tab-divisi" class="tab-content hidden">
-                <div id="divControls" class="glass card hidden" style="margin-bottom: 1rem;">
-                    <select id="divSelect">
-                        <option value="Ketua OSIS">Ketua OSIS</option><option value="Wakil">Wakil</option>
-                        <option value="Bendahara">Bendahara</option><option value="Sekretaris">Sekretaris</option>
-                        <option value="Logistik">Logistik</option><option value="Humas">Humas</option>
-                        <option value="Acara">Acara</option><option value="Pdd">PDD</option><option value="Keamanan">Keamanan</option>
+                <div class="form-group">
+                    <label>Jabatan</label>
+                    <select id="loginRole" class="form-select" onchange="togglePasswordInput()">
+                        <option value="Anggota">Anggota</option>
+                        <option value="Bendahara">Bendahara</option>
+                        <option value="Ketua">Ketua</option>
                     </select>
-                    <textarea id="divJobdesk" rows="2" placeholder="Jobdesk baru..."></textarea>
-                    <button class="mt-2" onclick="updateDivisi()">Update</button>
                 </div>
-                <div id="divList" class="grid-cards"></div>
+
+                <div class="form-group" id="passGroup" style="display: none;">
+                    <label>Kata Sandi</label>
+                    <input type="password" id="loginPass" class="form-input" placeholder="Masukkan password khusus">
+                </div>
+
+                <button class="btn" onclick="handleLogin()">Masuk Ke Portal <i class="fa-solid fa-arrow-right"></i></button>
             </div>
         </div>
+
+        <div id="dashboard-view" class="view">
+            <header>
+                <div class="user-info">
+                    <h3 id="dashName">Nama User</h3>
+                    <span id="dashRole">Jabatan</span>
+                </div>
+                <button class="btn-small btn-danger" onclick="logout()"><i class="fa-solid fa-power-off"></i></button>
+            </header>
+
+            <div class="grid-menu">
+                <div class="menu-card glass" onclick="openFeature('tugas')">
+                    <i class="fa-solid fa-clipboard-check"></i>
+                    <h4>Laporan Tugas</h4>
+                </div>
+                <div class="menu-card glass" onclick="openFeature('poin')">
+                    <i class="fa-solid fa-star"></i>
+                    <h4>Lihat Poin</h4>
+                </div>
+                <div class="menu-card glass" onclick="openFeature('keuangan')">
+                    <i class="fa-solid fa-wallet"></i>
+                    <h4>Keuangan</h4>
+                </div>
+                <div class="menu-card glass" onclick="openFeature('deadline')">
+                    <i class="fa-solid fa-hourglass-half"></i>
+                    <h4>Deadline Tugas</h4>
+                </div>
+                <div class="menu-card glass" onclick="openFeature('dokumentasi')">
+                    <i class="fa-solid fa-camera"></i>
+                    <h4>Hasil Dokumentasi</h4>
+                </div>
+                <div class="menu-card glass" onclick="openFeature('divisi')">
+                    <i class="fa-solid fa-users-gear"></i>
+                    <h4>Tugas Divisi</h4>
+                </div>
+                <div class="menu-card glass" onclick="openFeature('acara')">
+                    <i class="fa-solid fa-flag-checkered"></i>
+                    <h4>Acara Selesai</h4>
+                </div>
+                <div class="menu-card glass" onclick="openFeature('notulensi')">
+                    <i class="fa-solid fa-book"></i>
+                    <h4>Notulensi</h4>
+                </div>
+                <div class="menu-card glass" onclick="openFeature('aduan')">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <h4>Report/Aduan</h4>
+                </div>
+                <div class="menu-card glass" onclick="openFeature('settings')">
+                    <i class="fa-solid fa-gear"></i>
+                    <h4>Pengaturan & Juknis</h4>
+                </div>
+            </div>
+        </div>
+
+        <div id="tugas-view" class="view">
+            <div class="feature-header">
+                <div class="back-btn glass" onclick="showDashboard()"><i class="fa-solid fa-arrow-left"></i></div>
+                <h2>Laporan Tugas</h2>
+            </div>
+            <div class="glass content-card">
+                <label>Nama Tugas yang dikerjakan</label>
+                <input type="text" id="tugasInput" class="form-input" style="background: rgba(0,0,0,0.3); color: white; border: none; margin-bottom: 10px;">
+                <button class="btn btn-success" onclick="submitTugas()">Kirim Laporan (+1 Poin)</button>
+            </div>
+            <h3>Riwayat Aktivitas</h3>
+            <div id="logList" style="margin-top: 15px;"></div>
+        </div>
+
+        <div id="poin-view" class="view">
+            <div class="feature-header">
+                <div class="back-btn glass" onclick="showDashboard()"><i class="fa-solid fa-arrow-left"></i></div>
+                <h2>Klasemen Poin</h2>
+            </div>
+            <div id="leaderboardList"></div>
+        </div>
+
+        <div id="keuangan-view" class="view">
+            <div class="feature-header">
+                <div class="back-btn glass" onclick="showDashboard()"><i class="fa-solid fa-arrow-left"></i></div>
+                <h2>Keuangan OSIS</h2>
+            </div>
+            <div class="finance-summary glass">
+                Rp <span id="totalSaldo">0</span>
+            </div>
+            <div id="financeControls" style="display:none; gap: 10px; margin-bottom: 20px;">
+                <button class="btn btn-success" onclick="openModal('financeModal', 'income')">+ Pemasukan</button>
+                <button class="btn btn-danger" onclick="openModal('financeModal', 'expense')">- Pengeluaran</button>
+            </div>
+            <div id="financeList"></div>
+        </div>
+
+        <div id="deadline-view" class="view">
+            <div class="feature-header">
+                <div class="back-btn glass" onclick="showDashboard()"><i class="fa-solid fa-arrow-left"></i></div>
+                <h2>Deadline Tugas</h2>
+            </div>
+            <div id="deadlineList"></div>
+            <div id="deadlineFab" class="fab" style="display:none;" onclick="openModal('deadlineModal')">+</div>
+        </div>
+
+        <div id="dokumentasi-view" class="view">
+            <div class="feature-header">
+                <div class="back-btn glass" onclick="showDashboard()"><i class="fa-solid fa-arrow-left"></i></div>
+                <h2>Dokumentasi</h2>
+            </div>
+            <div id="docGrid" class="doc-grid"></div>
+            <div id="docFab" class="fab" style="display:none;" onclick="openModal('docModal')">+</div>
+        </div>
+
+        <div id="divisi-view" class="view">
+            <div class="feature-header">
+                <div class="back-btn glass" onclick="showDashboard()"><i class="fa-solid fa-arrow-left"></i></div>
+                <h2>Tugas Divisi</h2>
+            </div>
+            <select id="divisiSelect" class="form-input" style="background: #1e293b; color: white; margin-bottom: 20px;" onchange="loadDivisiJobs()">
+                <option value="Ketua">Ketua</option>
+                <option value="Wakil">Wakil</option>
+                <option value="Bendahara">Bendahara</option>
+                <option value="Sekretaris">Sekretaris</option>
+                <option value="Logistik">Logistik</option>
+                <option value="Humas">Humas</option>
+                <option value="Acara">Acara</option>
+                <option value="Pdd">PDD (Dokumentasi)</option>
+                <option value="Keamanan">Keamanan</option>
+            </select>
+            <div id="divisiContent" class="glass content-card">
+                <textarea id="jobdescInput" style="width: 100%; height: 200px; background: transparent; color: white; border: none;" readonly></textarea>
+                <button id="saveDivisiBtn" class="btn" style="display: none; margin-top: 10px;" onclick="saveDivisi()">Simpan Perubahan</button>
+            </div>
+        </div>
+        
+        <div id="financeModal" class="modal">
+            <div class="modal-content">
+                <h3>Input Keuangan</h3>
+                <input type="text" id="finDesc" placeholder="Keterangan">
+                <input type="number" id="finAmount" placeholder="Jumlah (Rp)">
+                <input type="hidden" id="finType">
+                <button class="btn" onclick="submitFinance()">Simpan</button>
+                <button class="btn btn-danger" style="margin-top: 10px;" onclick="closeModal('financeModal')">Batal</button>
+            </div>
+        </div>
+
+        <div id="deadlineModal" class="modal">
+            <div class="modal-content">
+                <h3>Tambah Deadline</h3>
+                <input type="text" id="dlTask" placeholder="Nama Tugas">
+                <select id="dlColor">
+                    <option value="tag-red">Merah (Penting)</option>
+                    <option value="tag-blue">Biru (Sedang)</option>
+                    <option value="tag-green">Hijau (Santai)</option>
+                </select>
+                <button class="btn" onclick="submitDeadline()">Simpan</button>
+                <button class="btn btn-danger" style="margin-top: 10px;" onclick="closeModal('deadlineModal')">Batal</button>
+            </div>
+        </div>
+
+        <div id="docModal" class="modal">
+            <div class="modal-content">
+                <h3>Upload Dokumentasi</h3>
+                <input type="text" id="docName" placeholder="Nama Acara">
+                <input type="date" id="docDate">
+                <input type="text" id="docLink" placeholder="Link (GDrive/Youtube)">
+                <button class="btn" onclick="submitDoc()">Simpan</button>
+                <button class="btn btn-danger" style="margin-top: 10px;" onclick="closeModal('docModal')">Batal</button>
+            </div>
+        </div>
+
+        <div id="settings-view" class="view">
+             <div class="feature-header">
+                <div class="back-btn glass" onclick="showDashboard()"><i class="fa-solid fa-arrow-left"></i></div>
+                <h2>Pengaturan</h2>
+            </div>
+            <div class="glass content-card">
+                <h4>Ganti Background</h4>
+                <p>Upload gambar favoritmu.</p>
+                <input type="file" id="bgInput" accept="image/*" class="form-input" style="margin-top: 10px;">
+            </div>
+             <div class="glass content-card">
+                <h4>Juknis / Panduan</h4>
+                <p>1. Lapor tugas menambah 1 poin.<br>2. Bendahara wajib lapor keuangan.<br>3. Cek deadline secara berkala.</p>
+            </div>
+        </div>
+
     </div>
 
     <script type="module">
-        // 1. IMPORT FIREBASE
+        // Import Firebase Functions
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getDatabase, ref, set, onValue, update, push, remove } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+        import { getDatabase, ref, set, push, onValue, remove, update } 
+        from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 
-        // 2. KONFIGURASI FIREBASE (PASTE KODE DARI CONSOLE DI SINI)
+        // ==========================================
+        // KONFIGURASI FIREBASE ANDA
+        // ==========================================
         const firebaseConfig = {
-            apiKey: "AIzaSyA37u87P6zbFiVOdl0KBF7nTB7riFVRbWQ",
-            authDomain: "osis-s1c.firebaseapp.com",
-            databaseURL: "https://osis-s1c-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "osis-s1c",
-            storageBucket: "osis-s1c.firebasestorage.app",
-            messagingSenderId: "338254985414",
-            appId: "1:338254985414:web:0c72ce734226c20d6c3fc7"
+          apiKey: "AIzaSyA37u87P6zbFiVOdl0KBF7nTB7riFVRbWQ",
+          authDomain: "osis-s1c.firebaseapp.com",
+          databaseURL: "https://osis-s1c-default-rtdb.asia-southeast1.firebasedatabase.app",
+          projectId: "osis-s1c",
+          storageBucket: "osis-s1c.firebasestorage.app",
+          messagingSenderId: "338254985414",
+          appId: "1:338254985414:web:0c72ce734226c20d6c3fc7",
+          measurementId: "G-JDKTNCC92S"
         };
 
-        // 3. INITIALIZE
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-        
-        // --- GLOBAL STATE ---
-        let globalData = {
-            users: {},
-            logs: {},
-            finance: {},
-            deadlines: {},
-            docs: {},
-            divisions: {
-                "Ketua OSIS": "Memimpin organisasi", "Wakil": "Mendampingi ketua",
-                "Bendahara": "Mengelola keuangan", "Sekretaris": "Administrasi",
-                "Logistik": "Perlengkapan", "Humas": "Hubungan masyarakat",
-                "Acara": "Konsep kegiatan", "Pdd": "Dokumentasi", "Keamanan": "Ketertiban"
-            }
-        };
-        let currentUser = null;
+        // Initialize Firebase
+        let app, db;
+        try {
+            app = initializeApp(firebaseConfig);
+            db = getDatabase(app);
+            console.log("Firebase Connected");
+        } catch (e) {
+            alert("Error Firebase: " + e.message);
+            console.error(e);
+        }
 
-        // --- AUTH & LOAD DATA ---
+        // Global State
+        let currentUser = JSON.parse(localStorage.getItem('user')) || null;
+
+        // --- AUTH LOGIC ---
         window.togglePasswordInput = () => {
             const role = document.getElementById('loginRole').value;
-            document.getElementById('passwordGroup').classList.toggle('hidden', role === 'Anggota');
+            const passGroup = document.getElementById('passGroup');
+            passGroup.style.display = (role === 'Bendahara' || role === 'Ketua') ? 'block' : 'none';
         }
 
         window.handleLogin = () => {
@@ -248,195 +438,326 @@
             const role = document.getElementById('loginRole').value;
             const pass = document.getElementById('loginPass').value;
 
-            if (!name) return alert("Isi nama!");
-            if (role === 'Bendahara' && pass !== 'bendahara321') return alert("Password Salah!");
-            if (role === 'Ketua' && pass !== 'Ketua 315') return alert("Password Salah!");
+            if (!name) return showToast("Nama wajib diisi!");
 
-            currentUser = { name, role };
+            // Password Validation
+            if (role === 'Bendahara' && pass !== 'bendahara321') return showToast("Password Salah!");
+            if (role === 'Ketua' && pass !== 'Ketua 315') return showToast("Password Salah!");
+
+            currentUser = { name, role, points: 0 }; // Points will be fetched from DB
+            localStorage.setItem('user', JSON.stringify(currentUser));
             
-            // Cek user baru di database
-            const userRef = ref(db, 'users/' + name);
-            // Kita set default poin 0 jika belum ada, pakai update agar tidak menimpa data lama
-            update(ref(db, 'users/' + name), { name: name, role: role });
+            // Register User to DB if not exists (for points tracking)
+            update(ref(db, 'users/' + name), { role: role });
 
-            document.getElementById('login-page').classList.add('hidden');
-            document.getElementById('dashboard').style.display = 'flex';
-            document.getElementById('userNameDisplay').innerText = `${name} (${role})`;
-
-            setupRoleAccess();
-            renderAll(); // Render awal
+            initDashboard();
         }
 
-        function setupRoleAccess() {
-            if (currentUser.role === 'Bendahara') document.getElementById('financeControls').classList.remove('hidden');
-            if (currentUser.role === 'Ketua') {
-                document.getElementById('deadlineControls').classList.remove('hidden');
-                document.getElementById('docControls').classList.remove('hidden');
-                document.getElementById('divControls').classList.remove('hidden');
+        window.logout = () => {
+            localStorage.removeItem('user');
+            currentUser = null;
+            location.reload();
+        }
+
+        function initDashboard() {
+            document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+            document.getElementById('dashboard-view').classList.add('active');
+            
+            document.getElementById('dashName').innerText = currentUser.name;
+            document.getElementById('dashRole').innerText = currentUser.role;
+
+            // Load BG if exists
+            const savedBg = localStorage.getItem('customBg');
+            if(savedBg) document.body.style.backgroundImage = `url(${savedBg})`;
+        }
+
+        // --- NAVIGATION ---
+        window.openFeature = (feature) => {
+            document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+            const viewId = feature + '-view';
+            const el = document.getElementById(viewId);
+            if(el) {
+                el.classList.add('active');
+                loadFeatureData(feature);
+            } else {
+                showToast("Fitur dalam pengembangan");
+                showDashboard();
             }
         }
 
-        // --- REALTIME LISTENER (JANTUNG APLIKASI) ---
-        // Fungsi ini otomatis jalan setiap ada perubahan data di database manapun
-        onValue(ref(db), (snapshot) => {
-            document.getElementById('loader').classList.add('hidden');
-            document.getElementById('login-page').classList.remove('hidden'); // Tampilkan login stlh load
-            
-            const data = snapshot.val();
-            if (data) {
-                globalData = { ...globalData, ...data }; // Merge data
-                if(currentUser) renderAll(); // Re-render jika user sudah login
-            }
-        });
-
-        // --- RENDERING FUNCTIONS ---
-        function renderAll() {
-            renderLeaderboard();
-            renderLogs();
-            renderFinance();
-            renderDeadlines();
-            renderDocs();
-            renderDivisi();
+        window.showDashboard = () => {
+            document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+            document.getElementById('dashboard-view').classList.add('active');
         }
 
-        // 1. LOGIC TUGAS & LOGS
-        window.submitTask = () => {
-            const desc = document.getElementById('taskDesc').value;
-            if(!desc) return;
+        // --- FEATURES LOGIC ---
 
-            // Update Poin User
-            const currentPoints = globalData.users[currentUser.name]?.points || 0;
-            update(ref(db, 'users/' + currentUser.name), { points: currentPoints + 1 });
+        function loadFeatureData(feature) {
+            if (feature === 'tugas') loadLogs();
+            if (feature === 'poin') loadLeaderboard();
+            if (feature === 'keuangan') loadFinance();
+            if (feature === 'deadline') loadDeadline();
+            if (feature === 'dokumentasi') loadDocs();
+            if (feature === 'divisi') loadDivisiJobs();
+        }
 
-            // Push Log Baru
+        // 1. TUGAS & LOGS
+        window.submitTugas = () => {
+            const task = document.getElementById('tugasInput').value;
+            if(!task) return;
+
+            // Log Activity
             push(ref(db, 'logs'), {
-                name: currentUser.name, desc: desc, date: new Date().toLocaleString()
+                name: currentUser.name,
+                task: task,
+                date: new Date().toLocaleString()
             });
 
-            document.getElementById('taskDesc').value = '';
-            alert("Tugas dicatat!");
+            // Add Point (Transaction logic simplified)
+            const userRef = ref(db, 'users/' + currentUser.name + '/points');
+            // Hacky increment for simple demo
+            onValue(userRef, (snapshot) => {
+                const currentPoints = snapshot.val() || 0;
+                set(userRef, currentPoints + 1);
+            }, { onlyOnce: true });
+
+            document.getElementById('tugasInput').value = "";
+            showToast("Laporan Terkirim! +1 Poin");
         }
 
-        function renderLeaderboard() {
-            const usersArray = Object.values(globalData.users || {});
-            usersArray.sort((a,b) => (b.points || 0) - (a.points || 0));
-            
-            document.getElementById('leaderboardList').innerHTML = usersArray.map((u, i) => `
-                <div style="display:flex; justify-content:space-between; padding:5px; border-bottom:1px solid rgba(255,255,255,0.1)">
-                    <span>#${i+1} ${u.name}</span>
-                    <span style="color:gold; font-weight:bold">${u.points || 0} Poin</span>
-                </div>
-            `).join('');
+        function loadLogs() {
+            onValue(ref(db, 'logs'), (snapshot) => {
+                const list = document.getElementById('logList');
+                list.innerHTML = "";
+                const data = snapshot.val();
+                if(data) {
+                    // Reverse order (newest first)
+                    Object.values(data).reverse().forEach(log => {
+                        list.innerHTML += `
+                            <div class="list-item">
+                                <div>
+                                    <strong>${log.name}</strong><br>
+                                    <small>${log.task}</small>
+                                </div>
+                                <small>${log.date.split(',')[0]}</small>
+                            </div>
+                        `;
+                    });
+                }
+            });
         }
 
-        function renderLogs() {
-            const logsArray = Object.values(globalData.logs || {}).reverse();
-            document.getElementById('activityLog').innerHTML = logsArray.map(l => `
-                <li style="font-size:0.9rem; margin-bottom:5px; padding:5px; background:rgba(255,255,255,0.05);">
-                    <strong>${l.name}</strong>: ${l.desc} <br> <small style="color:#94a3b8">${l.date}</small>
-                </li>
-            `).join('');
+        // 2. LEADERBOARD
+        function loadLeaderboard() {
+            onValue(ref(db, 'users'), (snapshot) => {
+                const list = document.getElementById('leaderboardList');
+                list.innerHTML = "";
+                const users = [];
+                snapshot.forEach(child => {
+                    users.push({ name: child.key, points: child.val().points || 0 });
+                });
+                
+                users.sort((a,b) => b.points - a.points); // Sort High to Low
+
+                users.forEach((u, index) => {
+                    list.innerHTML += `
+                        <div class="list-item glass">
+                            <span style="font-size:1.2rem; font-weight:bold; color:gold;">#${index+1}</span>
+                            <strong>${u.name}</strong>
+                            <span class="tag tag-green">${u.points} Poin</span>
+                        </div>
+                    `;
+                });
+            });
         }
 
-        // 2. LOGIC KEUANGAN
-        window.addTransaction = () => {
-            const type = document.getElementById('finType').value;
-            const amount = parseInt(document.getElementById('finAmount').value);
+        // 3. KEUANGAN
+        function loadFinance() {
+            const controls = document.getElementById('financeControls');
+            // Only Bendahara can edit
+            if(currentUser.role === 'Bendahara') controls.style.display = 'flex';
+
+            onValue(ref(db, 'finance'), (snapshot) => {
+                const list = document.getElementById('financeList');
+                list.innerHTML = "";
+                let total = 0;
+
+                const data = snapshot.val();
+                if(data) {
+                    Object.entries(data).forEach(([key, item]) => {
+                        const amount = parseInt(item.amount);
+                        if(item.type === 'income') total += amount;
+                        else total -= amount;
+
+                        const deleteBtn = currentUser.role === 'Bendahara' ? 
+                            `<button class="btn-small btn-danger" onclick="deleteItem('finance/${key}')">X</button>` : '';
+
+                        list.innerHTML += `
+                            <div class="list-item">
+                                <div>
+                                    <strong style="color: ${item.type === 'income' ? '#4ade80' : '#ef4444'}">
+                                        ${item.type === 'income' ? '+' : '-'} Rp ${amount.toLocaleString()}
+                                    </strong>
+                                    <br><small>${item.desc}</small>
+                                </div>
+                                ${deleteBtn}
+                            </div>
+                        `;
+                    });
+                }
+                document.getElementById('totalSaldo').innerText = total.toLocaleString();
+            });
+        }
+
+        window.submitFinance = () => {
             const desc = document.getElementById('finDesc').value;
-            if(!amount) return;
-
-            push(ref(db, 'finance'), { type, amount, desc, date: new Date().toLocaleDateString() });
-            document.getElementById('finAmount').value = '';
-            document.getElementById('finDesc').value = '';
-        }
-
-        function renderFinance() {
-            let total = 0;
-            const finArray = Object.entries(globalData.finance || {});
+            const amount = document.getElementById('finAmount').value;
+            const type = document.getElementById('finType').value;
             
-            const html = finArray.map(([key, f]) => {
-                if(f.type === 'in') total += f.amount; else total -= f.amount;
-                
-                const delBtn = currentUser.role === 'Bendahara' ? 
-                    `<i class="fas fa-trash" style="color:var(--danger); cursor:pointer" onclick="delItem('finance/${key}')"></i>` : '';
-                
-                return `<tr>
-                    <td>${f.desc} <br><small>${f.date}</small></td>
-                    <td style="color:${f.type==='in'?'var(--success)':'var(--danger)'}">Rp ${f.amount.toLocaleString()}</td>
-                    <td>${delBtn}</td>
-                </tr>`;
-            }).join('');
-
-            document.getElementById('financeTable').innerHTML = html;
-            document.getElementById('totalSaldo').innerText = `Rp ${total.toLocaleString()}`;
-        }
-
-        // 3. LOGIC DEADLINE
-        window.addDeadline = () => {
-            const title = document.getElementById('dlTitle').value;
-            const color = document.getElementById('dlColor').value;
-            if(!title) return;
-            push(ref(db, 'deadlines'), { title, color, done: false });
-        }
-
-        function renderDeadlines() {
-            const dlArray = Object.entries(globalData.deadlines || {});
-            document.getElementById('deadlineList').innerHTML = dlArray.map(([key, dl]) => `
-                <div class="task-item">
-                    <div class="${dl.done ? 'task-done' : ''}">
-                        <span class="badge" style="background:${dl.color}">&nbsp;</span> ${dl.title}
-                    </div>
-                    <div>
-                        <button class="secondary" onclick="toggleDl('${key}', ${dl.done})">${dl.done?'Batal':'Selesai'}</button>
-                        ${currentUser.role === 'Ketua' ? `<button class="danger" onclick="delItem('deadlines/${key}')">X</button>` : ''}
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        window.toggleDl = (key, currentStatus) => update(ref(db, `deadlines/${key}`), { done: !currentStatus });
-
-        // 4. LOGIC DOKUMENTASI
-        window.addDoc = () => {
-            const title = document.getElementById('docName').value;
-            const link = document.getElementById('docLink').value;
-            const story = document.getElementById('docStory').value;
-            push(ref(db, 'docs'), { title, link, story, date: new Date().toLocaleDateString() });
-            alert("Arsip Disimpan");
-        }
-
-        function renderDocs() {
-            const docArray = Object.values(globalData.docs || {});
-            document.getElementById('docGallery').innerHTML = docArray.map(doc => `
-                <div class="glass card" onclick="window.open('${doc.link}', '_blank')" style="cursor:pointer;">
-                    <h4>${doc.title}</h4> <p class="text-sm mt-2">"${doc.story}"</p>
-                </div>
-            `).join('');
-        }
-
-        // 5. DIVISI
-        window.updateDivisi = () => {
-            const div = document.getElementById('divSelect').value;
-            const job = document.getElementById('divJobdesk').value;
-            update(ref(db, `divisions`), { [div]: job });
-            alert("Update Sukses");
-        }
-
-        function renderDivisi() {
-            let html = '';
-            for (const [div, job] of Object.entries(globalData.divisions || {})) {
-                html += `<div class="glass card"><h4 style="color:var(--accent)">${div}</h4><p class="text-sm">${job}</p></div>`;
+            if(desc && amount) {
+                push(ref(db, 'finance'), { desc, amount, type });
+                closeModal('financeModal');
             }
-            document.getElementById('divList').innerHTML = html;
         }
 
-        // UTILS
-        window.delItem = (path) => { if(confirm("Hapus?")) remove(ref(db, path)); }
-        window.switchTab = (id) => {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.getElementById('tab-'+id).classList.remove('hidden');
+        // 4. DEADLINE
+        function loadDeadline() {
+            // Only Ketua can Add
+            if(currentUser.role === 'Ketua') document.getElementById('deadlineFab').style.display = 'flex';
+
+            onValue(ref(db, 'deadlines'), (snapshot) => {
+                const list = document.getElementById('deadlineList');
+                list.innerHTML = "";
+                const data = snapshot.val();
+                if(data) {
+                    Object.entries(data).forEach(([key, item]) => {
+                        const isDone = item.status === 'done';
+                        const deleteBtn = currentUser.role === 'Ketua' ? 
+                            `<button class="btn-small btn-danger" onclick="deleteItem('deadlines/${key}')">Hapus</button>` : '';
+                        
+                        // Toggle Logic for Members
+                        const toggleAction = `onclick="toggleDeadline('${key}', '${item.status}')"`;
+
+                        list.innerHTML += `
+                            <div class="list-item ${isDone ? 'done' : ''}">
+                                <div ${toggleAction} style="cursor:pointer; flex:1;">
+                                    <span class="tag ${item.color}">${isDone ? 'SELESAI' : 'DEADLINE'}</span>
+                                    <span style="margin-left: 10px;">${item.task}</span>
+                                </div>
+                                ${deleteBtn}
+                            </div>
+                        `;
+                    });
+                }
+            });
         }
-        window.logout = () => location.reload();
+
+        window.submitDeadline = () => {
+            const task = document.getElementById('dlTask').value;
+            const color = document.getElementById('dlColor').value;
+            if(task) {
+                push(ref(db, 'deadlines'), { task, color, status: 'pending' });
+                closeModal('deadlineModal');
+            }
+        }
+
+        window.toggleDeadline = (key, currentStatus) => {
+            // Any member can mark as done
+            const newStatus = currentStatus === 'pending' ? 'done' : 'pending';
+            update(ref(db, 'deadlines/' + key), { status: newStatus });
+        }
+
+        // 5. DOKUMENTASI
+        function loadDocs() {
+            if(currentUser.role === 'Ketua') document.getElementById('docFab').style.display = 'flex';
+            
+            onValue(ref(db, 'docs'), (snapshot) => {
+                const grid = document.getElementById('docGrid');
+                grid.innerHTML = "";
+                const data = snapshot.val();
+                if(data) {
+                    Object.values(data).forEach(doc => {
+                        grid.innerHTML += `
+                            <div class="doc-card" onclick="window.open('${doc.link}', '_blank')">
+                                <h5>${doc.name}</h5>
+                                <small>${doc.date}</small>
+                                <div style="margin-top:5px; font-size:0.8rem; color:#3b82f6;">Klik untuk buka link</div>
+                            </div>
+                        `;
+                    });
+                }
+            });
+        }
+
+        window.submitDoc = () => {
+            const name = document.getElementById('docName').value;
+            const date = document.getElementById('docDate').value;
+            const link = document.getElementById('docLink').value;
+            if(name && link) {
+                push(ref(db, 'docs'), { name, date, link });
+                closeModal('docModal');
+            }
+        }
+
+        // 6. DIVISI
+        window.loadDivisiJobs = () => {
+            const div = document.getElementById('divisiSelect').value;
+            const txt = document.getElementById('jobdescInput');
+            const btn = document.getElementById('saveDivisiBtn');
+
+            // Permission: Only Ketua can edit
+            if(currentUser.role === 'Ketua') {
+                txt.readOnly = false;
+                txt.style.border = "1px solid rgba(255,255,255,0.3)";
+                btn.style.display = "block";
+            } else {
+                txt.readOnly = true;
+                txt.style.border = "none";
+                btn.style.display = "none";
+            }
+
+            onValue(ref(db, 'divisi/' + div), (snapshot) => {
+                txt.value = snapshot.val() || "Belum ada jobdesk.";
+            });
+        }
+
+        window.saveDivisi = () => {
+            const div = document.getElementById('divisiSelect').value;
+            const desc = document.getElementById('jobdescInput').value;
+            set(ref(db, 'divisi/' + div), desc);
+            showToast("Jobdesk disimpan!");
+        }
+
+        // --- UTILS ---
+        window.deleteItem = (path) => {
+            if(confirm("Yakin hapus?")) remove(ref(db, path));
+        }
+
+        window.openModal = (id, type) => {
+            document.getElementById(id).classList.add('active');
+            if(type) document.getElementById('finType').value = type;
+        }
+        window.closeModal = (id) => document.getElementById(id).classList.remove('active');
+
+        window.showToast = (msg) => {
+            const t = document.getElementById('toast');
+            t.innerText = msg;
+            t.style.display = 'block';
+            setTimeout(() => t.style.display = 'none', 3000);
+        }
+
+        // Background Change (Local Only)
+        document.getElementById('bgInput').addEventListener('change', function() {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.body.style.backgroundImage = `url(${e.target.result})`;
+                localStorage.setItem('customBg', e.target.result);
+            }
+            reader.readAsDataURL(this.files[0]);
+        });
+
+        // Auto Login Check
+        if(currentUser) initDashboard();
 
     </script>
 </body>
