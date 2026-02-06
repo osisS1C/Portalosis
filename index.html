@@ -55,21 +55,24 @@
         .btn-danger { background: #ef4444; }
         .btn-danger:hover { background: #dc2626; }
         .btn-success { background: #10b981; }
-        .btn-small { width: auto; padding: 6px 12px; font-size: 0.8rem; }
+        .btn-small { width: auto; padding: 6px 12px; font-size: 0.8rem; border-radius: 8px; }
 
         /* --- VIEWS --- */
-        .view { display: none; padding: 20px; animation: fadeIn 0.5s ease; max-width: 1200px; margin: 0 auto; }
-        .view.active { display: block; }
+        /* PERBAIKAN CSS: Pastikan view benar-benar hilang jika tidak active */
+        .view { display: none !important; padding: 20px; animation: fadeIn 0.5s ease; max-width: 1200px; margin: 0 auto; }
+        .view.active { display: block !important; }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         /* --- LOGIN VIEW --- */
         #login-view {
             height: 100vh;
-            display: flex;
+            display: flex !important; /* Override generic view for flex layout */
             align-items: center;
             justify-content: center;
         }
+        /* Jika login view tidak aktif, paksa hide */
+        #login-view:not(.active) { display: none !important; }
 
         .login-card {
             background: white; 
@@ -280,6 +283,9 @@
                 <div class="back-btn glass" onclick="showDashboard()"><i class="fa-solid fa-arrow-left"></i></div>
                 <h2>Klasemen Poin</h2>
             </div>
+            <div class="glass content-card" style="margin-bottom: 10px;">
+                <p><small>*Ketua dapat mengurangi poin jika ada kecurangan.</small></p>
+            </div>
             <div id="leaderboardList"></div>
         </div>
 
@@ -460,7 +466,12 @@
         }
 
         function initDashboard() {
-            document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+            // PERBAIKAN: Paksa hide semua view dulu
+            document.querySelectorAll('.view').forEach(el => {
+                el.classList.remove('active');
+            });
+            
+            // Tampilkan Dashboard
             document.getElementById('dashboard-view').classList.add('active');
             
             document.getElementById('dashName').innerText = currentUser.name;
@@ -473,7 +484,9 @@
 
         // --- NAVIGATION ---
         window.openFeature = (feature) => {
+            // PERBAIKAN: Reset semua view sebelum membuka fitur baru
             document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+            
             const viewId = feature + '-view';
             const el = document.getElementById(viewId);
             if(el) {
@@ -515,7 +528,7 @@
 
             // Add Point (Transaction logic simplified)
             const userRef = ref(db, 'users/' + currentUser.name + '/points');
-            // Hacky increment for simple demo
+            
             onValue(userRef, (snapshot) => {
                 const currentPoints = snapshot.val() || 0;
                 set(userRef, currentPoints + 1);
@@ -547,7 +560,7 @@
             });
         }
 
-        // 2. LEADERBOARD
+        // 2. LEADERBOARD (PLUS FITUR HAPUS POIN OLEH KETUA)
         function loadLeaderboard() {
             onValue(ref(db, 'users'), (snapshot) => {
                 const list = document.getElementById('leaderboardList');
@@ -560,15 +573,42 @@
                 users.sort((a,b) => b.points - a.points); // Sort High to Low
 
                 users.forEach((u, index) => {
+                    // Logika tombol hapus poin khusus Ketua
+                    let actionBtn = '';
+                    if (currentUser.role === 'Ketua') {
+                        actionBtn = `<button class="btn-small btn-danger" onclick="decreasePoint('${u.name}')" style="margin-left: 10px;">-1</button>`;
+                    }
+
                     list.innerHTML += `
                         <div class="list-item glass">
-                            <span style="font-size:1.2rem; font-weight:bold; color:gold;">#${index+1}</span>
-                            <strong>${u.name}</strong>
-                            <span class="tag tag-green">${u.points} Poin</span>
+                            <div style="display:flex; align-items:center;">
+                                <span style="font-size:1.2rem; font-weight:bold; color:gold; width: 30px;">#${index+1}</span>
+                                <div>
+                                    <strong>${u.name}</strong><br>
+                                    <span class="tag tag-green">${u.points} Poin</span>
+                                </div>
+                            </div>
+                            ${actionBtn}
                         </div>
                     `;
                 });
             });
+        }
+
+        // FITUR BARU: Mengurangi Poin
+        window.decreasePoint = (targetName) => {
+            if(!confirm(`Yakin ingin mengurangi 1 poin milik ${targetName}?`)) return;
+
+            const userRef = ref(db, 'users/' + targetName + '/points');
+            onValue(userRef, (snapshot) => {
+                let currentPoints = snapshot.val() || 0;
+                if (currentPoints > 0) {
+                    set(userRef, currentPoints - 1);
+                    showToast(`Poin ${targetName} dikurangi.`);
+                } else {
+                    showToast("Poin sudah 0, tidak bisa dikurangi.");
+                }
+            }, { onlyOnce: true });
         }
 
         // 3. KEUANGAN
