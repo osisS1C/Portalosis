@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Manajemen OSIS PRO</title>
+    <title>Sistem Manajemen OSIS PRO (Online)</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
+        /* CSS SAMA SEPERTI SEBELUMNYA */
         :root {
             --bg-color: #0f172a;
             --glass-bg: rgba(255, 255, 255, 0.05);
@@ -18,194 +19,71 @@
             --success: #10b981;
             --danger: #ef4444;
         }
-
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-
         body {
             background-color: var(--bg-color);
             color: var(--text);
             min-height: 100vh;
             background-image: radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.2) 0%, transparent 20%),
                               radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.2) 0%, transparent 20%);
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            transition: background 0.5s ease;
+            background-size: cover; background-position: center; background-attachment: fixed;
         }
-
-        /* Utility: Glassmorphism */
         .glass {
-            background: var(--glass-bg);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid var(--glass-border);
-            border-radius: 16px;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+            background: var(--glass-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border); border-radius: 16px; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
         }
-
-        /* --- LOGIN PAGE --- */
-        #login-page {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            z-index: 100;
-            position: relative;
-        }
-
-        .login-card {
-            width: 100%;
-            max-width: 400px;
-            padding: 2rem;
-            text-align: center;
-        }
-
-        .input-group {
-            margin-bottom: 1.5rem;
-            text-align: left;
-        }
-
+        #login-page { display: flex; justify-content: center; align-items: center; height: 100vh; z-index: 100; position: relative; }
+        .login-card { width: 100%; max-width: 400px; padding: 2rem; text-align: center; }
+        .input-group { margin-bottom: 1.5rem; text-align: left; }
         input, select, textarea {
-            width: 100%;
-            padding: 12px;
-            margin-top: 5px;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--glass-border);
-            color: white;
-            border-radius: 8px;
-            outline: none;
-            transition: 0.3s;
+            width: 100%; padding: 12px; margin-top: 5px; background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--glass-border); color: white; border-radius: 8px; outline: none; transition: 0.3s;
         }
-
         input:focus { border-color: var(--primary); }
-
         button {
-            width: 100%;
-            padding: 12px;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            border: none;
-            color: white;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
+            width: 100%; padding: 12px; background: linear-gradient(135deg, var(--primary), var(--accent));
+            border: none; color: white; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s;
         }
-
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
-        }
-
-        button.secondary { background: #475569; }
-        button.danger { background: var(--danger); }
-
-        /* --- DASHBOARD --- */
+        button:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4); }
+        button.secondary { background: #475569; } button.danger { background: var(--danger); }
         #dashboard { display: none; height: 100vh; overflow: hidden; }
-
-        /* Sidebar */
-        .sidebar {
-            width: 260px;
-            height: 100%;
-            padding: 1.5rem;
-            display: flex;
-            flex-direction: column;
-            border-right: 1px solid var(--glass-border);
-        }
-
-        .nav-item {
-            padding: 12px;
-            margin-bottom: 8px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: #94a3b8;
-        }
-
-        .nav-item:hover, .nav-item.active {
-            background: rgba(255,255,255,0.1);
-            color: white;
-        }
-
-        /* Main Content */
-        .main-content {
-            flex: 1;
-            padding: 2rem;
-            overflow-y: auto;
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
-
-        .grid-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
+        .sidebar { width: 260px; height: 100%; padding: 1.5rem; display: flex; flex-direction: column; border-right: 1px solid var(--glass-border); }
+        .nav-item { padding: 12px; margin-bottom: 8px; border-radius: 8px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 10px; color: #94a3b8; }
+        .nav-item:hover, .nav-item.active { background: rgba(255,255,255,0.1); color: white; }
+        .main-content { flex: 1; padding: 2rem; overflow-y: auto; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+        .grid-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
         .card { padding: 1.5rem; }
-        
-        /* Specific Modules */
-        .task-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
-            border-bottom: 1px solid var(--glass-border);
-            animation: fadeIn 0.5s;
-        }
-
+        .task-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid var(--glass-border); }
         .task-done { text-decoration: line-through; color: var(--success); opacity: 0.7; }
-        
-        .badge {
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            font-weight: bold;
-        }
-
-        /* Animations */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Mobile Responsive */
+        .badge { padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; }
         @media (max-width: 768px) {
             #dashboard { flex-direction: column; }
-            .sidebar { 
-                width: 100%; 
-                height: auto; 
-                flex-direction: row; 
-                overflow-x: auto; 
-                padding: 1rem;
-                border-right: none;
-                border-bottom: 1px solid var(--glass-border);
-            }
+            .sidebar { width: 100%; height: auto; flex-direction: row; overflow-x: auto; padding: 1rem; border-right: none; border-bottom: 1px solid var(--glass-border); }
             .nav-item { font-size: 0.8rem; white-space: nowrap; }
             .main-content { padding: 1rem; }
         }
-
-        .hidden { display: none !important; }
-        .text-sm { font-size: 0.85rem; color: #cbd5e1; }
-        .mt-2 { margin-top: 1rem; }
+        .hidden { display: none !important; } .text-sm { font-size: 0.85rem; color: #cbd5e1; } .mt-2 { margin-top: 1rem; }
+        
+        /* Loading Overlay */
+        #loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-color); z-index: 999; display: flex; justify-content: center; align-items: center; flex-direction: column; }
+        .spinner { width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.1); border-top: 4px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
-    <div id="login-page">
+    <div id="loader">
+        <div class="spinner"></div>
+        <p class="mt-2">Menghubungkan Database...</p>
+    </div>
+
+    <div id="login-page" class="hidden">
         <div class="glass login-card">
-            <h2 style="margin-bottom: 20px;"><i class="fas fa-layer-group"></i> OSIS PRO</h2>
+            <h2 style="margin-bottom: 20px;"><i class="fas fa-satellite-dish"></i> OSIS PRO ONLINE</h2>
             <div class="input-group">
                 <label>Nama Anda</label>
-                <input type="text" id="loginName" placeholder="Masukkan nama panggilan...">
+                <input type="text" id="loginName" placeholder="Masukkan nama...">
             </div>
             <div class="input-group">
                 <label>Pilih Role</label>
@@ -217,22 +95,21 @@
             </div>
             <div class="input-group hidden" id="passwordGroup">
                 <label>Password Khusus</label>
-                <input type="password" id="loginPass" placeholder="Masukkan password...">
+                <input type="password" id="loginPass" placeholder="Password...">
             </div>
             <button onclick="handleLogin()">MASUK <i class="fas fa-arrow-right"></i></button>
         </div>
     </div>
 
-    <div id="dashboard" style="display: flex;">
+    <div id="dashboard">
         <div class="glass sidebar">
-            <h3 style="margin-bottom: 20px; text-align: center;"><i class="fas fa-bolt"></i> OSIS HUB</h3>
+            <h3 style="margin-bottom: 20px; text-align: center;">OSIS ONLINE</h3>
             <div class="nav-item active" onclick="switchTab('home')"><i class="fas fa-home"></i> Dashboard</div>
             <div class="nav-item" onclick="switchTab('tasks')"><i class="fas fa-tasks"></i> Tugas & Poin</div>
             <div class="nav-item" onclick="switchTab('finance')"><i class="fas fa-wallet"></i> Keuangan</div>
             <div class="nav-item" onclick="switchTab('deadlines')"><i class="fas fa-clock"></i> Deadline</div>
-            <div class="nav-item" onclick="switchTab('docs')"><i class="fas fa-folder-open"></i> Dokumentasi</div>
+            <div class="nav-item" onclick="switchTab('docs')"><i class="fas fa-folder-open"></i> Arsip</div>
             <div class="nav-item" onclick="switchTab('divisi')"><i class="fas fa-users"></i> Divisi</div>
-            <div class="nav-item" onclick="switchTab('settings')"><i class="fas fa-cog"></i> Pengaturan</div>
             <div style="flex-grow: 1;"></div>
             <div class="nav-item" style="color: var(--danger);" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</div>
         </div>
@@ -241,250 +118,178 @@
             <div class="header glass" style="padding: 15px; border-radius: 12px;">
                 <div>
                     <h2 id="pageTitle">Dashboard</h2>
-                    <p class="text-sm">Selamat datang, <span id="userNameDisplay" style="color: var(--primary); font-weight: bold;">User</span> (<span id="userRoleDisplay">Role</span>)</p>
+                    <p class="text-sm">Login: <span id="userNameDisplay" style="color:var(--primary)">User</span></p>
                 </div>
-                <div id="dateDisplay" class="text-sm"></div>
+                <div class="text-sm"><span style="color:var(--success)">● Online</span></div>
             </div>
 
             <div id="tab-home" class="tab-content">
                 <div class="grid-cards">
                     <div class="glass card">
                         <h3><i class="fas fa-star" style="color: gold;"></i> Klasemen Poin</h3>
-                        <div id="leaderboardList" class="mt-2"></div>
+                        <div id="leaderboardList" class="mt-2">Loading...</div>
                     </div>
                     <div class="glass card">
-                        <h3><i class="fas fa-bullhorn"></i> Info Terbaru</h3>
-                        <div id="latestInfo" class="mt-2 text-sm">Belum ada arsip acara.</div>
+                        <h3>Riwayat Log Aktivitas</h3>
+                        <ul id="activityLog" class="mt-2" style="list-style: none; max-height: 200px; overflow-y: auto;"></ul>
                     </div>
-                </div>
-                <div class="glass card">
-                    <h3>Riwayat Log Aktivitas</h3>
-                    <ul id="activityLog" class="mt-2" style="list-style: none; max-height: 200px; overflow-y: auto;"></ul>
                 </div>
             </div>
 
             <div id="tab-tasks" class="tab-content hidden">
-                <div class="glass card" style="margin-bottom: 20px;">
-                    <h3>Lapor Tugas (Dapat +1 Poin)</h3>
-                    <input type="text" id="taskDesc" placeholder="Apa yang baru saja kamu kerjakan? (Misal: Membuat poster acara)">
-                    <button class="mt-2" onclick="submitTask()"><i class="fas fa-paper-plane"></i> Kirim Laporan</button>
+                <div class="glass card">
+                    <h3>Lapor Tugas (+1 Poin)</h3>
+                    <input type="text" id="taskDesc" placeholder="Deskripsi tugas...">
+                    <button class="mt-2" onclick="submitTask()">Kirim Laporan</button>
                 </div>
             </div>
 
             <div id="tab-finance" class="tab-content hidden">
-                <div class="grid-cards">
-                    <div class="glass card" style="text-align: center;">
-                        <p>Saldo Saat Ini</p>
-                        <h1 id="totalSaldo" style="color: var(--success);">Rp 0</h1>
-                    </div>
+                <div class="glass card" style="text-align: center; margin-bottom: 1rem;">
+                    <p>Total Kas OSIS</p>
+                    <h1 id="totalSaldo" style="color: var(--success);">Rp 0</h1>
                 </div>
-                <div id="financeControls" class="glass card hidden" style="margin-bottom: 20px;">
+                <div id="financeControls" class="glass card hidden" style="margin-bottom: 1rem;">
                     <h3>Input Transaksi</h3>
-                    <select id="finType">
-                        <option value="in">Pemasukan (+)</option>
-                        <option value="out">Pengeluaran (-)</option>
-                    </select>
-                    <input type="number" id="finAmount" placeholder="Nominal (Rp)">
+                    <select id="finType"><option value="in">Masuk (+)</option><option value="out">Keluar (-)</option></select>
+                    <input type="number" id="finAmount" placeholder="Nominal">
                     <input type="text" id="finDesc" placeholder="Keterangan">
-                    <button class="mt-2" onclick="addTransaction()">Simpan Transaksi</button>
+                    <button class="mt-2" onclick="addTransaction()">Simpan</button>
                 </div>
                 <div class="glass card">
-                    <h3>Riwayat Keuangan</h3>
-                    <table style="width: 100%; text-align: left; margin-top: 10px;">
-                        <thead><tr><th>Tgl</th><th>Ket</th><th>Jml</th><th>Aksi</th></tr></thead>
+                    <table style="width: 100%;">
+                        <thead><tr><th>Ket</th><th>Jml</th><th>Aksi</th></tr></thead>
                         <tbody id="financeTable"></tbody>
                     </table>
                 </div>
             </div>
 
             <div id="tab-deadlines" class="tab-content hidden">
-                <div id="deadlineControls" class="glass card hidden" style="margin-bottom: 20px;">
+                <div id="deadlineControls" class="glass card hidden" style="margin-bottom: 1rem;">
                     <h3>Tambah Deadline</h3>
                     <input type="text" id="dlTitle" placeholder="Nama Tugas">
-                    <input type="color" id="dlColor" value="#ef4444" style="height: 40px; cursor: pointer;">
-                    <button class="mt-2" onclick="addDeadline()">Tambah Deadline</button>
+                    <input type="color" id="dlColor" value="#ef4444">
+                    <button class="mt-2" onclick="addDeadline()">Tambah</button>
                 </div>
-                <div class="glass card">
-                    <h3>Daftar Deadline</h3>
-                    <div id="deadlineList" class="mt-2"></div>
-                </div>
+                <div class="glass card" id="deadlineList"></div>
             </div>
 
             <div id="tab-docs" class="tab-content hidden">
-                <div id="docControls" class="glass card hidden" style="margin-bottom: 20px;">
-                    <h3>Upload Dokumentasi / Arsip</h3>
+                <div id="docControls" class="glass card hidden" style="margin-bottom: 1rem;">
+                    <h3>Upload Arsip</h3>
                     <input type="text" id="docName" placeholder="Nama Acara">
-                    <input type="date" id="docDate">
-                    <input type="text" id="docLink" placeholder="Link GDrive / Youtube">
-                    <textarea id="docStory" placeholder="Cerita sukses acara ini (untuk arsip)" rows="3"></textarea>
-                    <button class="mt-2" onclick="addDoc()">Simpan Dokumentasi</button>
+                    <input type="text" id="docLink" placeholder="Link GDrive/Youtube">
+                    <textarea id="docStory" placeholder="Cerita singkat..." rows="2"></textarea>
+                    <button class="mt-2" onclick="addDoc()">Simpan</button>
                 </div>
                 <div id="docGallery" class="grid-cards"></div>
             </div>
 
             <div id="tab-divisi" class="tab-content hidden">
-                <div id="divControls" class="glass card hidden" style="margin-bottom: 20px;">
-                    <h3>Edit Jobdesk Divisi</h3>
+                <div id="divControls" class="glass card hidden" style="margin-bottom: 1rem;">
                     <select id="divSelect">
-                        <option value="Ketua OSIS">Ketua OSIS</option>
-                        <option value="Wakil">Wakil</option>
-                        <option value="Bendahara">Bendahara</option>
-                        <option value="Sekretaris">Sekretaris</option>
-                        <option value="Logistik">Logistik</option>
-                        <option value="Humas">Humas</option>
-                        <option value="Acara">Acara</option>
-                        <option value="Pdd">PDD</option>
-                        <option value="Keamanan">Keamanan</option>
+                        <option value="Ketua OSIS">Ketua OSIS</option><option value="Wakil">Wakil</option>
+                        <option value="Bendahara">Bendahara</option><option value="Sekretaris">Sekretaris</option>
+                        <option value="Logistik">Logistik</option><option value="Humas">Humas</option>
+                        <option value="Acara">Acara</option><option value="Pdd">PDD</option><option value="Keamanan">Keamanan</option>
                     </select>
-                    <textarea id="divJobdesk" rows="3" placeholder="Jobdesk baru..."></textarea>
+                    <textarea id="divJobdesk" rows="2" placeholder="Jobdesk baru..."></textarea>
                     <button class="mt-2" onclick="updateDivisi()">Update</button>
                 </div>
                 <div id="divList" class="grid-cards"></div>
             </div>
-
-            <div id="tab-settings" class="tab-content hidden">
-                <div class="glass card" style="margin-bottom: 20px;">
-                    <h3>Ganti Background Web</h3>
-                    <input type="file" id="bgInput" accept="image/*" onchange="changeBackground()">
-                </div>
-                
-                <div class="glass card" style="margin-bottom: 20px;">
-                    <h3>Notulensi Rapat</h3>
-                    <textarea id="noteInput" placeholder="Tulis hasil rapat..." rows="2"></textarea>
-                    <button class="mt-2" onclick="addNote()">Simpan Notulensi</button>
-                    <div id="noteList" class="mt-2"></div>
-                </div>
-
-                <div id="secretReportSection" class="hidden">
-                     <div class="glass card" style="border: 1px solid var(--danger);">
-                        <h3 style="color: var(--danger);">Kotak Aduan Masuk (Rahasia)</h3>
-                        <div id="reportList"></div>
-                    </div>
-                </div>
-                
-                <div id="reportFormSection">
-                    <div class="glass card">
-                        <h3>Lapor Aduan (Privasi Aman)</h3>
-                        <textarea id="reportText" placeholder="Punya masalah? Ceritakan di sini..." rows="3"></textarea>
-                        <button class="mt-2 secondary" onclick="sendReport()">Kirim ke Ketua</button>
-                    </div>
-                </div>
-            </div>
-
         </div>
     </div>
 
     <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-  import { getDatabase } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+        // 1. IMPORT FIREBASE
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getDatabase, ref, set, onValue, update, push, remove } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  const firebaseConfig = {
-    apiKey: "AIzaSyA37u87P6zbFiVOdl0KBF7nTB7riFVRbWQ",
-    authDomain: "osis-s1c.firebaseapp.com",
-    databaseURL: "https://osis-s1c-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "osis-s1c",
-    storageBucket: "osis-s1c.firebasestorage.app",
-    messagingSenderId: "338254985414",
-    appId: "1:338254985414:web:0c72ce734226c20d6c3fc7"
-    measurementId: "G-JDKTNCC92S"
-  };
-
-  // INIT
-  window.app = initializeApp(firebaseConfig);
-  window.dbFirebase = getDatabase(app);
-        // --- DATA STATE & INITIALIZATION ---
-        const defaultData = {
-            users: [], // {name, points}
-            logs: [],
-            finance: [], // {type, amount, desc, date}
-            deadlines: [], // {id, title, color, done}
-            docs: [], // {title, date, link, story}
-            notes: [],
-            reports: [],
-            divisions: {
-                "Ketua OSIS": "Memimpin organisasi.",
-                "Wakil": "Mendampingi ketua.",
-                "Bendahara": "Mengelola keuangan.",
-                "Sekretaris": "Administrasi surat.",
-                "Logistik": "Perlengkapan acara.",
-                "Humas": "Hubungan masyarakat.",
-                "Acara": "Konsep kegiatan.",
-                "Pdd": "Dokumentasi & Desain.",
-                "Keamanan": "Menjaga ketertiban."
-            }
+        // 2. KONFIGURASI FIREBASE (PASTE KODE DARI CONSOLE DI SINI)
+        const firebaseConfig = {
+            apiKey: "AIzaSyA37u87P6zbFiVOdl0KBF7nTB7riFVRbWQ",
+            authDomain: "osis-s1c.firebaseapp.com",
+            databaseURL: "https://osis-s1c-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "osis-s1c",
+            storageBucket: "osis-s1c.firebasestorage.app",
+            messagingSenderId: "338254985414",
+            appId: "1:338254985414:web:0c72ce734226c20d6c3fc7"
         };
 
-        let db = JSON.parse(localStorage.getItem('osisPRO_DB')) || defaultData;
+        // 3. INITIALIZE
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        
+        // --- GLOBAL STATE ---
+        let globalData = {
+            users: {},
+            logs: {},
+            finance: {},
+            deadlines: {},
+            docs: {},
+            divisions: {
+                "Ketua OSIS": "Memimpin organisasi", "Wakil": "Mendampingi ketua",
+                "Bendahara": "Mengelola keuangan", "Sekretaris": "Administrasi",
+                "Logistik": "Perlengkapan", "Humas": "Hubungan masyarakat",
+                "Acara": "Konsep kegiatan", "Pdd": "Dokumentasi", "Keamanan": "Ketertiban"
+            }
+        };
         let currentUser = null;
 
-        function saveData() {
-            localStorage.setItem('osisPRO_DB', JSON.stringify(db));
-            renderAll();
-        }
-
-        // --- AUTH SYSTEM ---
-        function togglePasswordInput() {
+        // --- AUTH & LOAD DATA ---
+        window.togglePasswordInput = () => {
             const role = document.getElementById('loginRole').value;
-            const passGroup = document.getElementById('passwordGroup');
-            passGroup.classList.toggle('hidden', role === 'Anggota');
+            document.getElementById('passwordGroup').classList.toggle('hidden', role === 'Anggota');
         }
 
-        function handleLogin() {
+        window.handleLogin = () => {
             const name = document.getElementById('loginName').value;
             const role = document.getElementById('loginRole').value;
             const pass = document.getElementById('loginPass').value;
 
-            if (!name) return alert("Nama wajib diisi!");
-
-            // Cek Password
+            if (!name) return alert("Isi nama!");
             if (role === 'Bendahara' && pass !== 'bendahara321') return alert("Password Salah!");
-            if (role === 'Ketua' && pass !== 'Ketua 315') return alert("Password Salah!"); // Note spasi
+            if (role === 'Ketua' && pass !== 'Ketua 315') return alert("Password Salah!");
 
-            // Login Success
             currentUser = { name, role };
             
-            // Tambah user ke database jika baru (untuk poin)
-            if (!db.users.find(u => u.name === name)) {
-                db.users.push({ name: name, points: 0 });
-                saveData();
-            }
+            // Cek user baru di database
+            const userRef = ref(db, 'users/' + name);
+            // Kita set default poin 0 jika belum ada, pakai update agar tidak menimpa data lama
+            update(ref(db, 'users/' + name), { name: name, role: role });
 
-            document.getElementById('login-page').style.display = 'none';
+            document.getElementById('login-page').classList.add('hidden');
             document.getElementById('dashboard').style.display = 'flex';
-            document.getElementById('userNameDisplay').innerText = name;
-            document.getElementById('userRoleDisplay').innerText = role;
+            document.getElementById('userNameDisplay').innerText = `${name} (${role})`;
 
             setupRoleAccess();
-            renderAll();
-        }
-
-        function logout() {
-            location.reload();
+            renderAll(); // Render awal
         }
 
         function setupRoleAccess() {
-            // Reset visibility
-            document.getElementById('financeControls').classList.add('hidden');
-            document.getElementById('deadlineControls').classList.add('hidden');
-            document.getElementById('docControls').classList.add('hidden');
-            document.getElementById('divControls').classList.add('hidden');
-            document.getElementById('secretReportSection').classList.add('hidden');
-            document.getElementById('reportFormSection').classList.remove('hidden');
-
-            if (currentUser.role === 'Bendahara') {
-                document.getElementById('financeControls').classList.remove('hidden');
-            }
+            if (currentUser.role === 'Bendahara') document.getElementById('financeControls').classList.remove('hidden');
             if (currentUser.role === 'Ketua') {
                 document.getElementById('deadlineControls').classList.remove('hidden');
                 document.getElementById('docControls').classList.remove('hidden');
                 document.getElementById('divControls').classList.remove('hidden');
-                document.getElementById('secretReportSection').classList.remove('hidden');
-                document.getElementById('reportFormSection').classList.add('hidden'); // Ketua ga butuh lapor ke diri sendiri
             }
         }
 
-        // --- RENDERING & FEATURES ---
+        // --- REALTIME LISTENER (JANTUNG APLIKASI) ---
+        // Fungsi ini otomatis jalan setiap ada perubahan data di database manapun
+        onValue(ref(db), (snapshot) => {
+            document.getElementById('loader').classList.add('hidden');
+            document.getElementById('login-page').classList.remove('hidden'); // Tampilkan login stlh load
+            
+            const data = snapshot.val();
+            if (data) {
+                globalData = { ...globalData, ...data }; // Merge data
+                if(currentUser) renderAll(); // Re-render jika user sudah login
+            }
+        });
+
+        // --- RENDERING FUNCTIONS ---
         function renderAll() {
             renderLeaderboard();
             renderLogs();
@@ -492,266 +297,146 @@
             renderDeadlines();
             renderDocs();
             renderDivisi();
-            renderNotes();
-            if(currentUser.role === 'Ketua') renderReports();
         }
 
-        // 1. POIN & LOGS
-        function submitTask() {
+        // 1. LOGIC TUGAS & LOGS
+        window.submitTask = () => {
             const desc = document.getElementById('taskDesc').value;
-            if (!desc) return alert("Isi deskripsi tugas!");
+            if(!desc) return;
 
-            // Tambah Poin
-            const userIdx = db.users.findIndex(u => u.name === currentUser.name);
-            if (userIdx !== -1) db.users[userIdx].points += 1;
+            // Update Poin User
+            const currentPoints = globalData.users[currentUser.name]?.points || 0;
+            update(ref(db, 'users/' + currentUser.name), { points: currentPoints + 1 });
 
-            // Log Aktivitas
-            db.logs.unshift({
-                name: currentUser.name,
-                desc: desc,
-                date: new Date().toLocaleString()
+            // Push Log Baru
+            push(ref(db, 'logs'), {
+                name: currentUser.name, desc: desc, date: new Date().toLocaleString()
             });
 
             document.getElementById('taskDesc').value = '';
-            alert("Laporan terkirim! +1 Poin");
-            saveData();
+            alert("Tugas dicatat!");
         }
 
         function renderLeaderboard() {
-            const list = document.getElementById('leaderboardList');
-            const sorted = [...db.users].sort((a,b) => b.points - a.points);
-            list.innerHTML = sorted.map((u, i) => `
+            const usersArray = Object.values(globalData.users || {});
+            usersArray.sort((a,b) => (b.points || 0) - (a.points || 0));
+            
+            document.getElementById('leaderboardList').innerHTML = usersArray.map((u, i) => `
                 <div style="display:flex; justify-content:space-between; padding:5px; border-bottom:1px solid rgba(255,255,255,0.1)">
                     <span>#${i+1} ${u.name}</span>
-                    <span style="color:var(--primary); font-weight:bold">${u.points} Poin</span>
+                    <span style="color:gold; font-weight:bold">${u.points || 0} Poin</span>
                 </div>
             `).join('');
         }
 
         function renderLogs() {
-            const list = document.getElementById('activityLog');
-            list.innerHTML = db.logs.map(log => `
-                <li style="font-size:0.9rem; margin-bottom:5px; padding:5px; background:rgba(255,255,255,0.05); border-radius:5px;">
-                    <strong>${log.name}</strong>: ${log.desc} <br>
-                    <small style="color:#94a3b8">${log.date}</small>
+            const logsArray = Object.values(globalData.logs || {}).reverse();
+            document.getElementById('activityLog').innerHTML = logsArray.map(l => `
+                <li style="font-size:0.9rem; margin-bottom:5px; padding:5px; background:rgba(255,255,255,0.05);">
+                    <strong>${l.name}</strong>: ${l.desc} <br> <small style="color:#94a3b8">${l.date}</small>
                 </li>
             `).join('');
         }
 
-        // 2. KEUANGAN
-        function addTransaction() {
+        // 2. LOGIC KEUANGAN
+        window.addTransaction = () => {
             const type = document.getElementById('finType').value;
             const amount = parseInt(document.getElementById('finAmount').value);
             const desc = document.getElementById('finDesc').value;
+            if(!amount) return;
 
-            if (!amount || !desc) return alert("Lengkapi data!");
-
-            db.finance.push({ type, amount, desc, date: new Date().toLocaleDateString() });
+            push(ref(db, 'finance'), { type, amount, desc, date: new Date().toLocaleDateString() });
             document.getElementById('finAmount').value = '';
             document.getElementById('finDesc').value = '';
-            saveData();
         }
 
         function renderFinance() {
             let total = 0;
-            const tbody = document.getElementById('financeTable');
-            tbody.innerHTML = db.finance.map((f, i) => {
-                if (f.type === 'in') total += f.amount;
-                else total -= f.amount;
+            const finArray = Object.entries(globalData.finance || {});
+            
+            const html = finArray.map(([key, f]) => {
+                if(f.type === 'in') total += f.amount; else total -= f.amount;
                 
-                const deleteBtn = currentUser.role === 'Bendahara' ? 
-                    `<i class="fas fa-trash" style="color:var(--danger); cursor:pointer;" onclick="deleteFinance(${i})"></i>` : '';
-
-                return `
-                <tr>
-                    <td>${f.date}</td>
-                    <td>${f.desc}</td>
-                    <td style="color: ${f.type === 'in' ? 'var(--success)' : 'var(--danger)'}">
-                        ${f.type === 'in' ? '+' : '-'} Rp ${f.amount.toLocaleString()}
-                    </td>
-                    <td>${deleteBtn}</td>
+                const delBtn = currentUser.role === 'Bendahara' ? 
+                    `<i class="fas fa-trash" style="color:var(--danger); cursor:pointer" onclick="delItem('finance/${key}')"></i>` : '';
+                
+                return `<tr>
+                    <td>${f.desc} <br><small>${f.date}</small></td>
+                    <td style="color:${f.type==='in'?'var(--success)':'var(--danger)'}">Rp ${f.amount.toLocaleString()}</td>
+                    <td>${delBtn}</td>
                 </tr>`;
             }).join('');
+
+            document.getElementById('financeTable').innerHTML = html;
             document.getElementById('totalSaldo').innerText = `Rp ${total.toLocaleString()}`;
         }
 
-        function deleteFinance(idx) {
-            if (confirm("Hapus transaksi ini?")) {
-                db.finance.splice(idx, 1);
-                saveData();
-            }
-        }
-
-        // 3. DEADLINE
-        function addDeadline() {
+        // 3. LOGIC DEADLINE
+        window.addDeadline = () => {
             const title = document.getElementById('dlTitle').value;
             const color = document.getElementById('dlColor').value;
             if(!title) return;
-
-            db.deadlines.push({ title, color, done: false });
-            document.getElementById('dlTitle').value = '';
-            saveData();
+            push(ref(db, 'deadlines'), { title, color, done: false });
         }
 
         function renderDeadlines() {
-            const list = document.getElementById('deadlineList');
-            list.innerHTML = db.deadlines.map((dl, i) => `
+            const dlArray = Object.entries(globalData.deadlines || {});
+            document.getElementById('deadlineList').innerHTML = dlArray.map(([key, dl]) => `
                 <div class="task-item">
                     <div class="${dl.done ? 'task-done' : ''}">
-                        <span class="badge" style="background:${dl.color}">&nbsp;</span>
-                        ${dl.title}
+                        <span class="badge" style="background:${dl.color}">&nbsp;</span> ${dl.title}
                     </div>
                     <div>
-                        <button onclick="toggleDone(${i})" class="secondary" style="padding:5px 10px; font-size:0.8rem;">
-                            ${dl.done ? 'Batal' : 'Selesai'}
-                        </button>
-                        ${currentUser.role === 'Ketua' ? 
-                        `<button onclick="deleteDeadline(${i})" class="danger" style="padding:5px 10px; font-size:0.8rem;">X</button>` : ''}
+                        <button class="secondary" onclick="toggleDl('${key}', ${dl.done})">${dl.done?'Batal':'Selesai'}</button>
+                        ${currentUser.role === 'Ketua' ? `<button class="danger" onclick="delItem('deadlines/${key}')">X</button>` : ''}
                     </div>
                 </div>
             `).join('');
         }
 
-        function toggleDone(i) {
-            db.deadlines[i].done = !db.deadlines[i].done;
-            saveData();
-        }
-        function deleteDeadline(i) {
-            db.deadlines.splice(i, 1);
-            saveData();
-        }
+        window.toggleDl = (key, currentStatus) => update(ref(db, `deadlines/${key}`), { done: !currentStatus });
 
-        // 4. DOKUMENTASI
-        function addDoc() {
+        // 4. LOGIC DOKUMENTASI
+        window.addDoc = () => {
             const title = document.getElementById('docName').value;
             const link = document.getElementById('docLink').value;
             const story = document.getElementById('docStory').value;
-            
-            if(!title || !link) return alert("Judul dan Link wajib!");
-
-            db.docs.push({ title, link, story, date: new Date().toLocaleDateString() });
-            saveData();
-            alert("Dokumentasi tersimpan!");
+            push(ref(db, 'docs'), { title, link, story, date: new Date().toLocaleDateString() });
+            alert("Arsip Disimpan");
         }
 
         function renderDocs() {
-            const gallery = document.getElementById('docGallery');
-            const latestInfo = document.getElementById('latestInfo');
-            
-            // Render Cards
-            gallery.innerHTML = db.docs.map(doc => `
-                <div class="glass card" onclick="window.open('${doc.link}', '_blank')" style="cursor:pointer; transition:0.3s;">
-                    <h4><i class="fas fa-external-link-alt"></i> ${doc.title}</h4>
-                    <small>${doc.date}</small>
-                    <p class="mt-2 text-sm">"${doc.story}"</p>
+            const docArray = Object.values(globalData.docs || {});
+            document.getElementById('docGallery').innerHTML = docArray.map(doc => `
+                <div class="glass card" onclick="window.open('${doc.link}', '_blank')" style="cursor:pointer;">
+                    <h4>${doc.title}</h4> <p class="text-sm mt-2">"${doc.story}"</p>
                 </div>
             `).join('');
-
-            // Update Info Terbaru di Dashboard
-            if(db.docs.length > 0) {
-                const latest = db.docs[db.docs.length - 1];
-                latestInfo.innerHTML = `<strong>${latest.title}</strong> sukses dilaksanakan!<br>"${latest.story}"`;
-            }
         }
 
         // 5. DIVISI
-        function updateDivisi() {
-            const divName = document.getElementById('divSelect').value;
+        window.updateDivisi = () => {
+            const div = document.getElementById('divSelect').value;
             const job = document.getElementById('divJobdesk').value;
-            if(!job) return;
-
-            db.divisions[divName] = job;
-            saveData();
-            alert("Jobdesk diupdate!");
+            update(ref(db, `divisions`), { [div]: job });
+            alert("Update Sukses");
         }
 
         function renderDivisi() {
-            const container = document.getElementById('divList');
             let html = '';
-            for (const [div, job] of Object.entries(db.divisions)) {
-                html += `
-                <div class="glass card">
-                    <h4 style="color:var(--accent)">${div}</h4>
-                    <p class="text-sm mt-2">${job}</p>
-                </div>`;
+            for (const [div, job] of Object.entries(globalData.divisions || {})) {
+                html += `<div class="glass card"><h4 style="color:var(--accent)">${div}</h4><p class="text-sm">${job}</p></div>`;
             }
-            container.innerHTML = html;
+            document.getElementById('divList').innerHTML = html;
         }
 
-        // 6. FITUR TAMBAHAN (Note & Report)
-        function addNote() {
-            const txt = document.getElementById('noteInput').value;
-            if(!txt) return;
-            db.notes.push({ txt, date: new Date().toLocaleDateString() });
-            document.getElementById('noteInput').value = '';
-            saveData();
-        }
-
-        function renderNotes() {
-            document.getElementById('noteList').innerHTML = db.notes.map((n, i) => `
-                <div style="background:rgba(0,0,0,0.2); padding:5px; margin-bottom:5px; border-radius:4px; display:flex; justify-content:space-between;">
-                    <span>${n.txt}</span>
-                    <i class="fas fa-times" onclick="deleteNote(${i})" style="cursor:pointer; color:var(--danger)"></i>
-                </div>
-            `).join('');
-        }
-        function deleteNote(i) { db.notes.splice(i,1); saveData(); }
-
-        function sendReport() {
-            const txt = document.getElementById('reportText').value;
-            if(!txt) return;
-            db.reports.push({ txt, date: new Date().toLocaleString() });
-            document.getElementById('reportText').value = '';
-            alert("Aduan terkirim secara anonim.");
-            saveData();
-        }
-
-        function renderReports() {
-            document.getElementById('reportList').innerHTML = db.reports.map(r => `
-                <div style="background:rgba(239, 68, 68, 0.1); padding:10px; margin-bottom:10px; border-left:3px solid var(--danger);">
-                    <small>${r.date}</small>
-                    <p>${r.txt}</p>
-                </div>
-            `).join('');
-        }
-
-        function changeBackground() {
-            const file = document.getElementById('bgInput').files[0];
-            if(file) {
-                const reader = new FileReader();
-                reader.onloadend = function() {
-                    document.body.style.backgroundImage = `url('${reader.result}')`;
-                    // Simpan preferensi bg (opsional, perlu localstorage terpisah agar tidak berat)
-                }
-                reader.readAsDataURL(file);
-            }
-        }
-
-        // --- UTILS ---
-        function switchTab(tabId) {
+        // UTILS
+        window.delItem = (path) => { if(confirm("Hapus?")) remove(ref(db, path)); }
+        window.switchTab = (id) => {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.getElementById('tab-' + tabId).classList.remove('hidden');
-            
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            // Set active class logic here if needed based on click
-            
-            // Update Title
-            const titles = {
-                'home': 'Dashboard Utama',
-                'tasks': 'Laporan Tugas & Poin',
-                'finance': 'Data Keuangan',
-                'deadlines': 'Deadline Tugas',
-                'docs': 'Arsip & Dokumentasi',
-                'divisi': 'Info Divisi',
-                'settings': 'Pengaturan'
-            };
-            document.getElementById('pageTitle').innerText = titles[tabId];
+            document.getElementById('tab-'+id).classList.remove('hidden');
         }
-
-        // Set Date
-        setInterval(() => {
-            document.getElementById('dateDisplay').innerText = new Date().toLocaleString('id-ID');
-        }, 1000);
+        window.logout = () => location.reload();
 
     </script>
 </body>
