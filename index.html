@@ -58,7 +58,6 @@
         .btn-small { width: auto; padding: 6px 12px; font-size: 0.8rem; border-radius: 8px; }
 
         /* --- VIEWS --- */
-        /* PERBAIKAN CSS: Pastikan view benar-benar hilang jika tidak active */
         .view { display: none !important; padding: 20px; animation: fadeIn 0.5s ease; max-width: 1200px; margin: 0 auto; }
         .view.active { display: block !important; }
 
@@ -67,11 +66,10 @@
         /* --- LOGIN VIEW --- */
         #login-view {
             height: 100vh;
-            display: flex !important; /* Override generic view for flex layout */
+            display: flex !important;
             align-items: center;
             justify-content: center;
         }
-        /* Jika login view tidak aktif, paksa hide */
         #login-view:not(.active) { display: none !important; }
 
         .login-card {
@@ -90,12 +88,13 @@
         
         .form-group { text-align: left; margin-bottom: 20px; }
         .form-group label { display: block; font-weight: 600; margin-bottom: 8px; color: #0f172a; }
-        .form-input, .form-select {
+        .form-input, .form-select, .form-textarea {
             width: 100%; padding: 12px; border: 2px solid #e2e8f0;
             border-radius: 12px; outline: none; transition: 0.3s;
             background: #f8fafc; color: #333;
         }
-        .form-input:focus { border-color: var(--primary); background: white; }
+        .form-textarea { resize: vertical; min-height: 100px; }
+        .form-input:focus, .form-textarea:focus { border-color: var(--primary); background: white; }
 
         /* --- DASHBOARD VIEW --- */
         header {
@@ -344,6 +343,55 @@
             </div>
         </div>
         
+        <div id="acara-view" class="view">
+            <div class="feature-header">
+                <div class="back-btn glass" onclick="showDashboard()"><i class="fa-solid fa-arrow-left"></i></div>
+                <h2>Arsip Acara</h2>
+            </div>
+            
+            <div id="acaraInputArea" class="glass content-card" style="display:none;">
+                <h4>Arsipkan Acara Baru</h4>
+                <input type="text" id="acaraTitle" placeholder="Nama Acara" class="form-input" style="margin-bottom:10px; background: rgba(0,0,0,0.3); color:white; border:none;">
+                <textarea id="acaraStory" placeholder="Ceritakan kesuksesan acara ini..." class="form-textarea" style="background: rgba(0,0,0,0.3); color:white; border:none;"></textarea>
+                <button class="btn" onclick="submitAcara()" style="margin-top:10px;">Arsipkan</button>
+            </div>
+
+            <div id="acaraList"></div>
+        </div>
+
+        <div id="notulensi-view" class="view">
+            <div class="feature-header">
+                <div class="back-btn glass" onclick="showDashboard()"><i class="fa-solid fa-arrow-left"></i></div>
+                <h2>Notulensi Rapat</h2>
+            </div>
+            
+            <div id="notulensiList"></div>
+            <div id="notulenFab" class="fab" style="display:none;" onclick="openModal('noteModal')">+</div>
+        </div>
+
+        <div id="aduan-view" class="view">
+            <div class="feature-header">
+                <div class="back-btn glass" onclick="showDashboard()"><i class="fa-solid fa-arrow-left"></i></div>
+                <h2>Layanan Aduan</h2>
+            </div>
+
+            <div id="aduanFormView">
+                <div class="glass content-card">
+                    <h4>Kirim Masukan/Aduan</h4>
+                    <p style="font-size:0.9rem; color:#ccc; margin-bottom:15px;">
+                        Pesan ini bersifat rahasia dan hanya akan masuk ke <strong>Inbox Ketua OSIS</strong>.
+                    </p>
+                    <textarea id="aduanText" class="form-textarea" placeholder="Tulis keluhan atau saran Anda di sini..." style="background: rgba(0,0,0,0.3); color:white; border:none;"></textarea>
+                    <button class="btn btn-danger" onclick="submitAduan()" style="margin-top:10px;">Kirim Rahasia</button>
+                </div>
+            </div>
+
+            <div id="aduanInboxView" style="display:none;">
+                <h4 style="margin-bottom:15px;">Kotak Masuk (Privat)</h4>
+                <div id="aduanList"></div>
+            </div>
+        </div>
+
         <div id="financeModal" class="modal">
             <div class="modal-content">
                 <h3>Input Keuangan</h3>
@@ -377,6 +425,17 @@
                 <input type="text" id="docLink" placeholder="Link (GDrive/Youtube)">
                 <button class="btn" onclick="submitDoc()">Simpan</button>
                 <button class="btn btn-danger" style="margin-top: 10px;" onclick="closeModal('docModal')">Batal</button>
+            </div>
+        </div>
+
+        <div id="noteModal" class="modal">
+            <div class="modal-content">
+                <h3>Buat Notulensi</h3>
+                <input type="text" id="noteTitle" placeholder="Agenda Rapat">
+                <input type="date" id="noteDate">
+                <textarea id="noteContent" class="form-textarea" placeholder="Isi pembahasan..." style="background: #0f172a; border: 1px solid #334155; color: white;"></textarea>
+                <button class="btn" onclick="submitNotulensi()">Simpan Notulen</button>
+                <button class="btn btn-danger" style="margin-top: 10px;" onclick="closeModal('noteModal')">Batal</button>
             </div>
         </div>
 
@@ -466,12 +525,7 @@
         }
 
         function initDashboard() {
-            // PERBAIKAN: Paksa hide semua view dulu
-            document.querySelectorAll('.view').forEach(el => {
-                el.classList.remove('active');
-            });
-            
-            // Tampilkan Dashboard
+            document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
             document.getElementById('dashboard-view').classList.add('active');
             
             document.getElementById('dashName').innerText = currentUser.name;
@@ -484,9 +538,7 @@
 
         // --- NAVIGATION ---
         window.openFeature = (feature) => {
-            // PERBAIKAN: Reset semua view sebelum membuka fitur baru
             document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
-            
             const viewId = feature + '-view';
             const el = document.getElementById(viewId);
             if(el) {
@@ -512,6 +564,9 @@
             if (feature === 'deadline') loadDeadline();
             if (feature === 'dokumentasi') loadDocs();
             if (feature === 'divisi') loadDivisiJobs();
+            if (feature === 'acara') loadAcara();
+            if (feature === 'notulensi') loadNotulensi();
+            if (feature === 'aduan') loadAduan();
         }
 
         // 1. TUGAS & LOGS
@@ -528,7 +583,6 @@
 
             // Add Point (Transaction logic simplified)
             const userRef = ref(db, 'users/' + currentUser.name + '/points');
-            
             onValue(userRef, (snapshot) => {
                 const currentPoints = snapshot.val() || 0;
                 set(userRef, currentPoints + 1);
@@ -544,7 +598,6 @@
                 list.innerHTML = "";
                 const data = snapshot.val();
                 if(data) {
-                    // Reverse order (newest first)
                     Object.values(data).reverse().forEach(log => {
                         list.innerHTML += `
                             <div class="list-item">
@@ -570,10 +623,9 @@
                     users.push({ name: child.key, points: child.val().points || 0 });
                 });
                 
-                users.sort((a,b) => b.points - a.points); // Sort High to Low
+                users.sort((a,b) => b.points - a.points);
 
                 users.forEach((u, index) => {
-                    // Logika tombol hapus poin khusus Ketua
                     let actionBtn = '';
                     if (currentUser.role === 'Ketua') {
                         actionBtn = `<button class="btn-small btn-danger" onclick="decreasePoint('${u.name}')" style="margin-left: 10px;">-1</button>`;
@@ -595,7 +647,6 @@
             });
         }
 
-        // FITUR BARU: Mengurangi Poin
         window.decreasePoint = (targetName) => {
             if(!confirm(`Yakin ingin mengurangi 1 poin milik ${targetName}?`)) return;
 
@@ -614,24 +665,20 @@
         // 3. KEUANGAN
         function loadFinance() {
             const controls = document.getElementById('financeControls');
-            // Only Bendahara can edit
             if(currentUser.role === 'Bendahara') controls.style.display = 'flex';
 
             onValue(ref(db, 'finance'), (snapshot) => {
                 const list = document.getElementById('financeList');
                 list.innerHTML = "";
                 let total = 0;
-
                 const data = snapshot.val();
                 if(data) {
                     Object.entries(data).forEach(([key, item]) => {
                         const amount = parseInt(item.amount);
                         if(item.type === 'income') total += amount;
                         else total -= amount;
-
                         const deleteBtn = currentUser.role === 'Bendahara' ? 
                             `<button class="btn-small btn-danger" onclick="deleteItem('finance/${key}')">X</button>` : '';
-
                         list.innerHTML += `
                             <div class="list-item">
                                 <div>
@@ -653,7 +700,6 @@
             const desc = document.getElementById('finDesc').value;
             const amount = document.getElementById('finAmount').value;
             const type = document.getElementById('finType').value;
-            
             if(desc && amount) {
                 push(ref(db, 'finance'), { desc, amount, type });
                 closeModal('financeModal');
@@ -662,9 +708,7 @@
 
         // 4. DEADLINE
         function loadDeadline() {
-            // Only Ketua can Add
             if(currentUser.role === 'Ketua') document.getElementById('deadlineFab').style.display = 'flex';
-
             onValue(ref(db, 'deadlines'), (snapshot) => {
                 const list = document.getElementById('deadlineList');
                 list.innerHTML = "";
@@ -674,10 +718,7 @@
                         const isDone = item.status === 'done';
                         const deleteBtn = currentUser.role === 'Ketua' ? 
                             `<button class="btn-small btn-danger" onclick="deleteItem('deadlines/${key}')">Hapus</button>` : '';
-                        
-                        // Toggle Logic for Members
                         const toggleAction = `onclick="toggleDeadline('${key}', '${item.status}')"`;
-
                         list.innerHTML += `
                             <div class="list-item ${isDone ? 'done' : ''}">
                                 <div ${toggleAction} style="cursor:pointer; flex:1;">
@@ -702,7 +743,6 @@
         }
 
         window.toggleDeadline = (key, currentStatus) => {
-            // Any member can mark as done
             const newStatus = currentStatus === 'pending' ? 'done' : 'pending';
             update(ref(db, 'deadlines/' + key), { status: newStatus });
         }
@@ -710,7 +750,6 @@
         // 5. DOKUMENTASI
         function loadDocs() {
             if(currentUser.role === 'Ketua') document.getElementById('docFab').style.display = 'flex';
-            
             onValue(ref(db, 'docs'), (snapshot) => {
                 const grid = document.getElementById('docGrid');
                 grid.innerHTML = "";
@@ -744,8 +783,6 @@
             const div = document.getElementById('divisiSelect').value;
             const txt = document.getElementById('jobdescInput');
             const btn = document.getElementById('saveDivisiBtn');
-
-            // Permission: Only Ketua can edit
             if(currentUser.role === 'Ketua') {
                 txt.readOnly = false;
                 txt.style.border = "1px solid rgba(255,255,255,0.3)";
@@ -755,7 +792,6 @@
                 txt.style.border = "none";
                 btn.style.display = "none";
             }
-
             onValue(ref(db, 'divisi/' + div), (snapshot) => {
                 txt.value = snapshot.val() || "Belum ada jobdesk.";
             });
@@ -766,6 +802,139 @@
             const desc = document.getElementById('jobdescInput').value;
             set(ref(db, 'divisi/' + div), desc);
             showToast("Jobdesk disimpan!");
+        }
+
+        // 7. ACARA SELESAI
+        window.loadAcara = () => {
+            // Only Ketua can add
+            if(currentUser.role === 'Ketua') {
+                document.getElementById('acaraInputArea').style.display = 'block';
+            } else {
+                document.getElementById('acaraInputArea').style.display = 'none';
+            }
+
+            onValue(ref(db, 'events'), (snapshot) => {
+                const list = document.getElementById('acaraList');
+                list.innerHTML = "";
+                const data = snapshot.val();
+                if(data) {
+                    Object.entries(data).reverse().forEach(([key, ev]) => {
+                        const deleteBtn = currentUser.role === 'Ketua' ? 
+                            `<button class="btn-small btn-danger" style="float:right;" onclick="deleteItem('events/${key}')">Hapus</button>` : '';
+
+                        list.innerHTML += `
+                            <div class="glass content-card">
+                                ${deleteBtn}
+                                <h4 style="color:#60a5fa; margin-bottom:5px;">${ev.title}</h4>
+                                <small style="display:block; margin-bottom:10px; opacity:0.7;">${ev.date}</small>
+                                <p style="white-space: pre-line;">${ev.story}</p>
+                            </div>
+                        `;
+                    });
+                }
+            });
+        }
+
+        window.submitAcara = () => {
+            const title = document.getElementById('acaraTitle').value;
+            const story = document.getElementById('acaraStory').value;
+            const date = new Date().toLocaleDateString();
+
+            if(title && story) {
+                push(ref(db, 'events'), { title, story, date });
+                document.getElementById('acaraTitle').value = '';
+                document.getElementById('acaraStory').value = '';
+                showToast("Acara diarsipkan!");
+            }
+        }
+
+        // 8. NOTULENSI
+        window.loadNotulensi = () => {
+            if(currentUser.role === 'Ketua') {
+                document.getElementById('notulenFab').style.display = 'flex';
+            }
+
+            onValue(ref(db, 'notes'), (snapshot) => {
+                const list = document.getElementById('notulensiList');
+                list.innerHTML = "";
+                const data = snapshot.val();
+                if(data) {
+                    Object.entries(data).reverse().forEach(([key, note]) => {
+                        const deleteBtn = currentUser.role === 'Ketua' ? 
+                            `<button class="btn-small btn-danger" style="margin-top:10px;" onclick="deleteItem('notes/${key}')">Hapus Notulen</button>` : '';
+
+                        list.innerHTML += `
+                            <div class="glass content-card">
+                                <h4 style="border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom:5px; margin-bottom:10px;">${note.title}</h4>
+                                <span class="tag tag-blue" style="margin-bottom:10px; display:inline-block;">${note.date}</span>
+                                <p style="white-space: pre-line; line-height: 1.6;">${note.content}</p>
+                                ${deleteBtn}
+                            </div>
+                        `;
+                    });
+                }
+            });
+        }
+
+        window.submitNotulensi = () => {
+            const title = document.getElementById('noteTitle').value;
+            const date = document.getElementById('noteDate').value;
+            const content = document.getElementById('noteContent').value;
+
+            if(title && content) {
+                push(ref(db, 'notes'), { title, date, content });
+                closeModal('noteModal');
+                showToast("Notulensi disimpan!");
+            }
+        }
+
+        // 9. ADUAN (REPORT)
+        window.loadAduan = () => {
+            if(currentUser.role === 'Ketua') {
+                document.getElementById('aduanFormView').style.display = 'none';
+                document.getElementById('aduanInboxView').style.display = 'block';
+                
+                // Load Messages for Ketua
+                onValue(ref(db, 'reports'), (snapshot) => {
+                    const list = document.getElementById('aduanList');
+                    list.innerHTML = "";
+                    const data = snapshot.val();
+                    if(data) {
+                        Object.entries(data).reverse().forEach(([key, rep]) => {
+                            list.innerHTML += `
+                                <div class="glass content-card">
+                                    <div style="display:flex; justify-content:space-between;">
+                                        <small style="color:#93c5fd;">Dari: ${rep.sender}</small>
+                                        <small>${rep.date}</small>
+                                    </div>
+                                    <hr style="border:0; border-top:1px solid rgba(255,255,255,0.1); margin:10px 0;">
+                                    <p>${rep.content}</p>
+                                    <button class="btn-small btn-danger" style="margin-top:10px;" onclick="deleteItem('reports/${key}')">Hapus Pesan</button>
+                                </div>
+                            `;
+                        });
+                    } else {
+                        list.innerHTML = "<p style='text-align:center; opacity:0.6;'>Belum ada aduan masuk.</p>";
+                    }
+                });
+
+            } else {
+                document.getElementById('aduanFormView').style.display = 'block';
+                document.getElementById('aduanInboxView').style.display = 'none';
+            }
+        }
+
+        window.submitAduan = () => {
+            const content = document.getElementById('aduanText').value;
+            if(!content) return showToast("Tulis pesan dulu!");
+
+            push(ref(db, 'reports'), {
+                content: content,
+                sender: currentUser.name, // Still tracking name but only Ketua sees it
+                date: new Date().toLocaleString()
+            });
+            document.getElementById('aduanText').value = "";
+            showToast("Pesan rahasia terkirim!");
         }
 
         // --- UTILS ---
