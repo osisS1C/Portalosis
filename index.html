@@ -143,19 +143,20 @@
         }
         .list-item.done { text-decoration: line-through; opacity: 0.6; }
         
-        /* --- WARNA TAG BARU (10 OPSI) --- */
+        /* --- WARNA TAG --- */
         .tag { padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: bold; color: white; text-transform: uppercase; letter-spacing: 0.5px; }
-        
-        .tag-all { background: #ef4444; } /* Merah - Semua */
-        .tag-ketua { background: #eab308; color: black; } /* Kuning - Ketua */
-        .tag-wakil { background: #f97316; } /* Orange - Wakil */
-        .tag-bendahara { background: #10b981; } /* Hijau - Bendahara */
-        .tag-sekretaris { background: #06b6d4; } /* Cyan - Sekretaris */
-        .tag-logistik { background: #78716c; } /* Abu - Logistik */
-        .tag-humas { background: #8b5cf6; } /* Ungu - Humas */
-        .tag-acara { background: #ec4899; } /* Pink - Acara */
-        .tag-pdd { background: #3b82f6; } /* Biru - PDD */
-        .tag-keamanan { background: #6366f1; } /* Indigo - Keamanan */
+        .tag-all { background: #ef4444; }
+        .tag-ketua { background: #eab308; color: black; }
+        .tag-wakil { background: #f97316; }
+        .tag-bendahara { background: #10b981; }
+        .tag-sekretaris { background: #06b6d4; }
+        .tag-logistik { background: #78716c; }
+        .tag-humas { background: #8b5cf6; }
+        .tag-acara { background: #ec4899; }
+        .tag-pdd { background: #3b82f6; }
+        .tag-keamanan { background: #6366f1; }
+        .tag-green { background: #10b981; } 
+        .tag-blue { background: #3b82f6; }
 
 
         /* Specific Features */
@@ -188,12 +189,49 @@
         .doc-card h5 { font-size: 1.1rem; color: var(--primary); margin-bottom: 5px; }
         .doc-card small { color: #64748b; }
 
+        /* --- TUTORIAL OVERLAY CSS --- */
+        #tutorialOverlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); z-index: 9999;
+            display: none; align-items: center; justify-content: center;
+        }
+        .tutorial-box {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 30px; border-radius: 20px;
+            max-width: 400px; width: 90%; text-align: center;
+            animation: popIn 0.4s ease;
+        }
+        @keyframes popIn { from{transform: scale(0.8); opacity:0;} to{transform: scale(1); opacity:1;} }
+        .tut-icon { font-size: 3rem; margin-bottom: 15px; color: #60a5fa; }
+        .tut-dots { display: flex; justify-content: center; gap: 5px; margin: 20px 0; }
+        .dot { width: 8px; height: 8px; background: rgba(255,255,255,0.3); border-radius: 50%; }
+        .dot.active { background: #3b82f6; width: 20px; border-radius: 10px; }
+        .tut-btn-group { display: flex; gap: 10px; }
+
     </style>
 </head>
 <body>
 
     <div id="app">
         <div id="toast" style="position: fixed; top: 20px; right: 20px; background: #333; color: white; padding: 12px 24px; border-radius: 8px; z-index: 2000; display: none;"></div>
+
+        <div id="tutorialOverlay">
+            <div class="tutorial-box">
+                <i id="tutIcon" class="fa-solid fa-hand-sparkles tut-icon"></i>
+                <h3 id="tutTitle" style="margin-bottom: 10px;">Selamat Datang!</h3>
+                <p id="tutDesc" style="font-size: 0.95rem; line-height: 1.6; min-height: 80px;">
+                    Selamat datang di Portal OSIS. Ini adalah panduan singkat untuk fitur-fitur yang tersedia.
+                </p>
+                <div id="tutDots" class="tut-dots">
+                    </div>
+                <div class="tut-btn-group">
+                    <button class="btn btn-danger" onclick="endTutorial()">Lewati</button>
+                    <button class="btn" onclick="nextTutorial()">Lanjut</button>
+                </div>
+            </div>
+        </div>
 
         <div id="login-view" class="view active">
             <div class="login-card">
@@ -420,6 +458,10 @@
             <div class="modal-content">
                 <h3>Tambah Deadline</h3>
                 <input type="text" id="dlTask" placeholder="Nama Tugas">
+                
+                <label style="display:block; margin: 10px 0 5px 0; font-size:0.9rem;">Tenggat Waktu:</label>
+                <input type="date" id="dlDate" class="form-input" style="color:white; background: #0f172a;">
+
                 <label style="display:block; margin: 10px 0 5px 0; font-size:0.9rem;">Pilih Kategori/Divisi:</label>
                 <select id="dlColor" class="form-select">
                     <option value="tag-all">🔴 UNTUK SEMUA (Penting)</option>
@@ -469,6 +511,7 @@
                 <h4>Ganti Background</h4>
                 <p>Upload gambar favoritmu.</p>
                 <input type="file" id="bgInput" accept="image/*" class="form-input" style="margin-top: 10px;">
+                <p><small style="color:#aaa;">*Gambar disimpan lokal di browser ini agar aplikasi tetap ringan.</small></p>
             </div>
              <div class="glass content-card">
                 <h4>Juknis / Panduan</h4>
@@ -511,6 +554,80 @@
 
         // Global State
         let currentUser = JSON.parse(localStorage.getItem('user')) || null;
+        
+        // --- TUTORIAL LOGIC (VIA FIREBASE) ---
+        let currentStep = 0;
+        const tutorialSteps = [
+            {
+                icon: "fa-solid fa-hand-sparkles",
+                title: "Selamat Datang!",
+                desc: "Selamat datang di Portal OSIS PRO. Aplikasi ini dibuat untuk mempermudah kinerja dan transparansi kita bersama. Mari ikuti tur singkat ini."
+            },
+            {
+                icon: "fa-solid fa-clipboard-check",
+                title: "Laporan Tugas & Poin",
+                desc: "Setiap Anda mengerjakan tugas OSIS, wajib lapor di menu 'Laporan Tugas'. Anda akan otomatis mendapat +1 Poin. Poin menentukan keaktifan Anda!"
+            },
+            {
+                icon: "fa-solid fa-wallet",
+                title: "Transparansi Keuangan",
+                desc: "Menu 'Keuangan' menampilkan saldo kas secara real-time. Bendahara akan mencatat pemasukan dan pengeluaran agar semua transparan."
+            },
+            {
+                icon: "fa-solid fa-hourglass-half",
+                title: "Deadline & Divisi",
+                desc: "Cek 'Deadline Tugas' secara berkala agar tidak terlewat. Menu 'Tugas Divisi' berisi jobdesk spesifik untuk divisi Anda."
+            },
+            {
+                icon: "fa-solid fa-shield-halved",
+                title: "Aduan & Arsip",
+                desc: "Punya masalah? Gunakan menu 'Report/Aduan'. Pesan Anda bersifat RAHASIA dan hanya dibaca Ketua. Acara sukses akan masuk di 'Acara Selesai'."
+            }
+        ];
+
+        window.checkFirstLogin = () => {
+            // Cek di FIREBASE apakah user sudah pernah lihat tutorial
+            // Kita ambil data user sekali saja (onlyOnce: true)
+            const userRef = ref(db, 'users/' + currentUser.name + '/tutorialSeen');
+            
+            onValue(userRef, (snapshot) => {
+                const hasSeen = snapshot.val();
+                if (!hasSeen) { // Jika null atau false, tampilkan tutorial
+                    document.getElementById('tutorialOverlay').style.display = 'flex';
+                    renderTutorial();
+                }
+            }, { onlyOnce: true });
+        }
+
+        window.renderTutorial = () => {
+            const step = tutorialSteps[currentStep];
+            document.getElementById('tutIcon').className = `tut-icon ${step.icon}`;
+            document.getElementById('tutTitle').innerText = step.title;
+            document.getElementById('tutDesc').innerText = step.desc;
+
+            // Render Dots
+            let dotsHtml = "";
+            tutorialSteps.forEach((_, i) => {
+                dotsHtml += `<div class="dot ${i === currentStep ? 'active' : ''}"></div>`;
+            });
+            document.getElementById('tutDots').innerHTML = dotsHtml;
+        }
+
+        window.nextTutorial = () => {
+            if(currentStep < tutorialSteps.length - 1) {
+                currentStep++;
+                renderTutorial();
+            } else {
+                endTutorial();
+            }
+        }
+
+        window.endTutorial = () => {
+            document.getElementById('tutorialOverlay').style.display = 'none';
+            // Update status di FIREBASE agar tidak muncul lagi
+            update(ref(db, 'users/' + currentUser.name), { tutorialSeen: true });
+        }
+
 
         // --- AUTH LOGIC ---
         window.togglePasswordInput = () => {
@@ -530,10 +647,11 @@
             if (role === 'Bendahara' && pass !== 'bendahara321') return showToast("Password Salah!");
             if (role === 'Ketua' && pass !== 'Ketua 315') return showToast("Password Salah!");
 
-            currentUser = { name, role, points: 0 }; // Points will be fetched from DB
+            currentUser = { name, role, points: 0 }; 
+            // Kita simpan SESSION tetap di localStorage agar kalau refresh tidak logout
             localStorage.setItem('user', JSON.stringify(currentUser));
             
-            // Register User to DB if not exists (for points tracking)
+            // Update role di DB, jangan timpa tutorialSeen
             update(ref(db, 'users/' + name), { role: role });
 
             initDashboard();
@@ -552,9 +670,11 @@
             document.getElementById('dashName').innerText = currentUser.name;
             document.getElementById('dashRole').innerText = currentUser.role;
 
-            // Load BG if exists
             const savedBg = localStorage.getItem('customBg');
             if(savedBg) document.body.style.backgroundImage = `url(${savedBg})`;
+
+            // TRIGGER TUTORIAL
+            checkFirstLogin();
         }
 
         // --- NAVIGATION ---
@@ -595,14 +715,12 @@
             const task = document.getElementById('tugasInput').value;
             if(!task) return;
 
-            // Log Activity
             push(ref(db, 'logs'), {
                 name: currentUser.name,
                 task: task,
                 date: new Date().toLocaleString()
             });
 
-            // Add Point (Transaction logic simplified)
             const userRef = ref(db, 'users/' + currentUser.name + '/points');
             onValue(userRef, (snapshot) => {
                 const currentPoints = snapshot.val() || 0;
@@ -634,7 +752,7 @@
             });
         }
 
-        // 2. LEADERBOARD (PLUS FITUR HAPUS POIN OLEH KETUA)
+        // 2. LEADERBOARD
         function loadLeaderboard() {
             onValue(ref(db, 'users'), (snapshot) => {
                 const list = document.getElementById('leaderboardList');
@@ -741,7 +859,6 @@
                             `<button class="btn-small btn-danger" onclick="deleteItem('deadlines/${key}')">Hapus</button>` : '';
                         const toggleAction = `onclick="toggleDeadline('${key}', '${item.status}')"`;
                         
-                        // Map tag class to Readable Text for Display if needed, but color is enough
                         let labelText = "";
                         if(item.color.includes('ketua')) labelText = "KETUA";
                         else if(item.color.includes('wakil')) labelText = "WAKIL";
@@ -754,11 +871,16 @@
                         else if(item.color.includes('keamanan')) labelText = "KEAMANAN";
                         else labelText = "SEMUA";
 
+                        const dateDisplay = item.date ? `<small style="opacity:0.7; display:block; margin-top:2px;"><i class="fa-regular fa-calendar"></i> ${item.date}</small>` : '';
+
                         list.innerHTML += `
                             <div class="list-item ${isDone ? 'done' : ''}">
-                                <div ${toggleAction} style="cursor:pointer; flex:1;">
+                                <div ${toggleAction} style="cursor:pointer; flex:1; display:flex; align-items:center;">
                                     <span class="tag ${item.color}">${labelText}</span>
-                                    <span style="margin-left: 10px; display:inline-block; vertical-align:middle;">${item.task}</span>
+                                    <div style="margin-left: 15px;">
+                                        <div style="font-weight:600;">${item.task}</div>
+                                        ${dateDisplay}
+                                    </div>
                                 </div>
                                 ${deleteBtn}
                             </div>
@@ -771,9 +893,13 @@
         window.submitDeadline = () => {
             const task = document.getElementById('dlTask').value;
             const color = document.getElementById('dlColor').value;
-            if(task) {
-                push(ref(db, 'deadlines'), { task, color, status: 'pending' });
+            const date = document.getElementById('dlDate').value;
+
+            if(task && date) {
+                push(ref(db, 'deadlines'), { task, color, date, status: 'pending' });
                 closeModal('deadlineModal');
+            } else {
+                showToast("Isi nama tugas dan tanggal!");
             }
         }
 
